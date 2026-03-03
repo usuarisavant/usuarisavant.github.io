@@ -2,10 +2,119 @@
 <html lang="ca">
 <head>
     <meta charset="UTF-8">
-    <title>La meva Web a GitHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Usuaris de Tren</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f4f9; }
+        h1 { color: #2c3e50; text-align: center; }
+        
+        /* Cercador */
+        #cercador {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        /* Estil de l'Acordió */
+        .faq-item {
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .faq-pregunta {
+            width: 100%;
+            padding: 15px;
+            background: #fff;
+            border: none;
+            text-align: left;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            transition: background 0.3s;
+        }
+
+        .faq-pregunta:hover { background: #eef2f3; }
+
+        .faq-resposta {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s;
+            background: #fafafa;
+            color: #555;
+        }
+
+        /* Classe per quan l'acordió està obert */
+        .active .faq-resposta {
+            max-height: 200px; /* Ajusta segons el text */
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hola des de Windows Desktop!</h1>
-    <p>Aquesta web s'ha pujat des del meu ordinador</p>
+
+    <h1>Preguntes Freqüents (FAQ) - Tren</h1>
+
+    <input type="text" id="cercador" placeholder="Cerca una pregunta (ex: bitllets, mascotes...)" onkeyup="filtrarFaqs()">
+
+    <div id="faq-container">
+        <div class="faq-item">
+            <button class="faq-pregunta" onclick="toggleFaq(this)">Com puc comprar bitllets online? <span>+</span></button>
+            <div class="faq-resposta">
+                Pots comprar-los a través de l'app oficial o al web de la companyia fins a 15 minuts abans de la sortida.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-pregunta" onclick="toggleFaq(this)">Puc viatjar amb la meva mascota? <span>+</span></button>
+            <div class="faq-resposta">
+                Sí, sempre que pesi menys de 10kg i vagi en un transportí homologat. Els gossos pigall viatgen gratis.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-pregunta" onclick="toggleFaq(this)">Què faig si he perdut un objecte? <span>+</span></button>
+            <div class="faq-resposta">
+                Has de contactar amb l'oficina d'Atenció al Client de l'estació de destí o trucar al telèfon de suport.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funció per obrir/tancar l'acordió
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            item.classList.toggle('active');
+            // Canviar el signe de + a -
+            const span = element.querySelector('span');
+            span.textContent = item.classList.contains('active') ? '-' : '+';
+        }
+
+        // Funció de cerca
+        function filtrarFaqs() {
+            const input = document.getElementById('cercador').value.toLowerCase();
+            const items = document.getElementsByClassName('faq-item');
+
+            for (let i = 0; i < items.length; i++) {
+                const text = items[i].innerText.toLowerCase();
+                if (text.includes(input)) {
+                    items[i].style.display = "block";
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+
 </body>
 </html>
