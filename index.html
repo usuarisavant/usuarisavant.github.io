@@ -3,118 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ Usuaris de Tren</title>
+    <title>Comunitat: Grups i FAQ</title>
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f4f9; }
-        h1 { color: #2c3e50; text-align: center; }
+        /* 1. VARIABLES */
+        :root { 
+            --ws-green: #25D366; 
+            --bg: #f0f2f5; 
+            --text: #333333; 
+            --text-muted: #555555;
+            --title-color: #111111;
+            --card-bg: #ffffff;
+            --border-color: #eeeeee;
+            --input-border: #cccccc;
+        }
+
+        body.dark-mode {
+            --bg: #121212; 
+            --text: #e0e0e0; 
+            --text-muted: #aaaaaa;
+            --title-color: #ffffff;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --input-border: #555555;
+        }
+
+        /* 2. BASE */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            padding: 20px; 
+            color: var(--text); 
+            transition: 0.3s;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
+            background: var(--card-bg); border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; z-index: 2000; transition: top 0.3s;
+        }
+        .navbar.hidden { top: -70px; }
+        .navbar-content {
+            width: 100%; max-width: 1100px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
+        }
+        .logo { font-weight: bold; color: var(--ws-green); font-size: 1.2rem; }
+        .header-spacer { height: 80px; }
+
+        /* BUSCADOR */
+        #buscador {
+            width: 100%; max-width: 500px; padding: 12px 20px; margin: 0 auto 30px;
+            display: block; border-radius: 25px; font-size: 1rem;
+            background: var(--card-bg); color: var(--text);
+            border: 1px solid var(--input-border);
+        }
+
+        /* TARGETA FAQ AMPLA */
+        .grid { display: flex; justify-content: center; padding: 0 10px; }
+        .card {
+    width: 95%;          /* Ocupa gairebé tot l'ample en pantalles mitjanes */
+    max-width: 1200px;   /* Un límit més generós per a monitors grans */
+    margin: 0 auto;      /* Centra la targeta */
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+        .faq-header { background: var(--ws-green); color: white; padding: 20px; text-align: center; font-weight: bold; }
+        .faq-body { padding: 20px; }
+        .faq-item { margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .faq-question { font-weight: bold; color: var(--ws-green); display: block; margin-bottom: 8px; font-size: 1.1rem; }
+        .faq-answer { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* MINI-CARRUSSEL AMB FLETXES LATERALS */
+        .mini-carousel {
+            display: flex; align-items: center; gap: 15px; margin-top: 15px;
+        }
+        .mini-slides {
+            flex-grow: 1; overflow: hidden; border: 1px solid var(--border-color); border-radius: 8px;
+        }
+        .mini-slide { display: none; background: var(--card-bg); }
+        .mini-slide.active { display: block; }
+        .mini-slide img { width: 100%; height: auto; display: block; }
         
-        /* Cercador */
-        #cercador {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
+       .mini-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alineat a l'esquerra queda més professional en línies amples */
+    gap: 15px;
+    background: none; /* Fora el fons verd */
+    color: var(--ws-green); /* El text ara és verd per destacar */
+    padding: 20px 15px 10px 15px; /* Més espai superior */
+    font-weight: bold;
+    font-size: 1.4rem; /* Un pèl més gran */
+    border-bottom: 2px solid var(--border-color); /* Una línia fina de separació */
+}
 
-        /* Estil de l'Acordió */
-        .faq-item {
-            background: white;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.mini-logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--ws-green); /* El cercle del logo sí que manté el verd */
+    background: var(--card-bg);
+}
+        .mini-prev, .mini-next {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            color: var(--text); width: 40px; height: 40px; border-radius: 50%;
+            cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: 0.2s;
         }
+        .mini-prev:hover, .mini-next:hover { background: var(--ws-green); color: white; }
 
-        .faq-pregunta {
-            width: 100%;
-            padding: 15px;
-            background: #fff;
-            border: none;
-            text-align: left;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            transition: background 0.3s;
+        .btn {
+            display: block; text-align: center; background: #333; color: white;
+            text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; margin: 20px;
         }
-
-        .faq-pregunta:hover { background: #eef2f3; }
-
-        .faq-resposta {
-            padding: 0 15px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out, padding 0.3s;
-            background: #fafafa;
-            color: #555;
-        }
-
-        /* Classe per quan l'acordió està obert */
-        .active .faq-resposta {
-            max-height: 200px; /* Ajusta segons el text */
-            padding: 15px;
-            border-top: 1px solid #eee;
-        }
+        #missatge-buit { display: none; text-align: center; padding: 50px; color: var(--text-muted); }
+        
+        #dark-mode-toggle { background: none; border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 8px; cursor: pointer; color: var(--text); }
     </style>
 </head>
 <body>
 
-    <h1>Preguntes Freqüents (FAQ) - Tren</h1>
-
-    <input type="text" id="cercador" placeholder="Cerca una pregunta (ex: bitllets, mascotes...)" onkeyup="filtrarFaqs()">
-
-    <div id="faq-container">
-        <div class="faq-item">
-            <button class="faq-pregunta" onclick="toggleFaq(this)">Com puc comprar bitllets online? <span>+</span></button>
-            <div class="faq-resposta">
-                Pots comprar-los a través de l'app oficial o al web de la companyia fins a 15 minuts abans de la sortida.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-pregunta" onclick="toggleFaq(this)">Puc viatjar amb la meva mascota? <span>+</span></button>
-            <div class="faq-resposta">
-                Sí, sempre que pesi menys de 10kg i vagi en un transportí homologat. Els gossos pigall viatgen gratis.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-pregunta" onclick="toggleFaq(this)">Què faig si he perdut un objecte? <span>+</span></button>
-            <div class="faq-resposta">
-                Has de contactar amb l'oficina d'Atenció al Client de l'estació de destí o trucar al telèfon de suport.
-            </div>
-        </div>
+<header class="navbar">
+    <div class="navbar-content">
+        <span class="logo">Comunitat 💬</span>
+        <button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
     </div>
+</header>
 
-    <script>
-        // Funció per obrir/tancar l'acordió
-        function toggleFaq(element) {
-            const item = element.parentElement;
-            item.classList.toggle('active');
-            // Canviar el signe de + a -
-            const span = element.querySelector('span');
-            span.textContent = item.classList.contains('active') ? '-' : '+';
-        }
+<div class="header-spacer"></div>
 
-        // Funció de cerca
-        function filtrarFaqs() {
-            const input = document.getElementById('cercador').value.toLowerCase();
-            const items = document.getElementsByClassName('faq-item');
+<input type="text" id="buscador" placeholder="Cerca en les preguntes o normes..." onkeyup="filtrar()">
 
-            for (let i = 0; i < items.length; i++) {
-                const text = items[i].innerText.toLowerCase();
-                if (text.includes(input)) {
-                    items[i].style.display = "block";
-                } else {
-                    items[i].style.display = "none";
-                }
+<div class="grid">
+    <div class="card">
+        <div class="faq-header">Centre d'Ajuda i Normatives</div>
+        
+        <div id="missatge-buit">No s'ha trobat cap resultat.</div>
+
+        <div class="faq-body">
+            <div class="faq-item">
+                <span class="faq-question">Com demano l'accés?</span>
+                <span class="faq-answer">Has d'omplir el formulari de registre. Mira els passos:</span>
+                
+                <div class="mini-carousel">
+                    <button class="mini-prev" onclick="moveMiniSlide(-1, this)">&#10094;</button>
+                    <div class="mini-slides">
+                        <div class="mini-slide active">
+                            <div class="mini-table-header">Pas 1: Ajustos</div>
+                            <div style="padding:20px; text-align:center;">📸 [Aquí aniria la foto 1]</div>
+                        </div>
+                        <div class="mini-slide">
+                            <div class="mini-table-header">Pas 2: Notificacions</div>
+                            <div style="padding:20px; text-align:center;">📸 [Aquí aniria la foto 2]</div>
+                        </div>
+                    </div>
+                    <button class="mini-next" onclick="moveMiniSlide(1, this)">&#10095;</button>
+                </div>
+            </div>
+
+          <div class="faq-item">
+    <span class="faq-question">Quines són les normes dels grups?</span>
+    <span class="faq-answer">Cada grup té les seves regles. Navega per veure-les:</span>
+    
+    <div class="mini-carousel">
+        <button class="mini-prev" onclick="moveMiniSlide(-1, this)">&#10094;</button>
+        
+        <div class="mini-slides">
+            <div class="mini-slide active">
+                <div class="mini-table-header">
+                    <img src="logo-alfa.png" class="mini-logo" alt="Logo">
+                    <span>Grup Alfa (Avisos)</span>
+                </div>
+                <table>
+                    <tr><th>Es pot:</th><td>Llegir i reaccionar</td></tr>
+                    <tr><th>No es pot:</th><td>Escriure missatges</td></tr>
+                </table>
+            </div>
+
+            <div class="mini-slide">
+                <div class="mini-table-header">
+                    <img src="logo-beta.png" class="mini-logo" alt="Logo">
+                    <span>Grup Beta (Debat)</span>
+                </div>
+                <table>
+                    <tr><th>Es pot:</th><td>Opinar i debatre</td></tr>
+                    <tr><th>No es pot:</th><td>Faltar al respecte</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <button class="mini-next" onclick="moveMiniSlide(1, this)">&#10095;</button>
+    </div>
+</div>
+
+            <div class="faq-item">
+                <span class="faq-question">És gratuït?</span>
+                <span class="faq-answer">Sí, tots els grups són oberts i lliures per a la comunitat.</span>
+            </div>
+        </div>
+
+        <a href="#" class="btn">Encara tens dubtes? Més ajuda</a>
+    </div>
+</div>
+
+<script>
+    // 1. FILTRE INTEL·LIGENT
+    function filtrar() {
+        const input = document.getElementById('buscador').value.toLowerCase();
+        const items = document.querySelectorAll('.faq-item');
+        let trobat = false;
+
+        items.forEach(item => {
+            const text = item.innerText.toLowerCase();
+            if (text.includes(input)) {
+                item.style.display = "block";
+                trobat = true;
+            } else {
+                item.style.display = "none";
             }
+        });
+
+        document.getElementById('missatge-buit').style.display = trobat ? "none" : "block";
+    }
+
+    // 2. NAVEGACIÓ MINI-CARRUSSEL
+    function moveMiniSlide(step, btn) {
+        const container = btn.closest('.mini-carousel');
+        const slides = container.querySelectorAll('.mini-slide');
+        let currentIdx = Array.from(slides).findIndex(s => s.classList.contains('active'));
+        
+        slides[currentIdx].classList.remove('active');
+        let nextIdx = (currentIdx + step + slides.length) % slides.length;
+        slides[nextIdx].classList.add('active');
+    }
+
+    // 3. DARK MODE
+    function toggleDarkMode() {
+        const body = document.body;
+        const btn = document.getElementById('dark-mode-toggle');
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+            btn.innerText = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            btn.innerText = '🌙';
+            localStorage.setItem('theme', 'light');
         }
-    </script>
+    }
+
+    // 4. CARREGA INICIAL
+    document.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('dark-mode-toggle').innerText = '☀️';
+        }
+    });
+
+    // 5. HEADER INTEL·LIGENT
+    let lastScrollTop = 0;
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        let st = window.pageYOffset || document.documentElement.scrollTop;
+        if (st > lastScrollTop && st > 100) navbar.classList.add('hidden');
+        else navbar.classList.remove('hidden');
+        lastScrollTop = st <= 0 ? 0 : st;
+    });
+</script>
 
 </body>
 </html>
