@@ -280,12 +280,9 @@ body {
 }
 
 /* 1. Forcem que el contenidor del traductor tingui mida i espai */
+/* Estil final per quan el botó real de Google aparegui a GitHub */
 #google_translate_element {
-    min-width: 130px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    overflow: visible;
+    min-width: 140px;
 }
 
 .goog-te-gadget-simple {
@@ -293,10 +290,12 @@ body {
     border: 1px solid var(--border) !important;
     padding: 2px 8px !important;
     border-radius: 6px !important;
-    cursor: pointer;
-    display: flex !important;
-    align-items: center;
-    transition: all 0.2s;
+    font-size: 12px !important;
+}
+
+/* Això fa que el "Carregant..." s'esborri netament quan arriba Google */
+#google_translate_element font {
+    display: none !important;
 }
 
 .goog-te-gadget-simple:hover {
@@ -331,7 +330,7 @@ body {
         </div>
         
         <div style="display: flex; align-items: center; gap: 10px;">
-            <div id="google_translate_element"></div>
+        <div id="google_translate_element">Carregant traductor...</div>
             <button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
         </div>
     </div>
