@@ -14,6 +14,9 @@
             --border: #eeeeee;
             --accent: #3498db;
             --nav-bg: #ffffff;
+	    --avant-purple: #5c3b8c;
+            --avant-orange: #f39c12;
+            --track-grey: #bdc3c7;
         }
 
         body.dark-mode {
@@ -37,20 +40,156 @@
             transition: background 0.3s, color 0.3s;
         }
 
+
+
+
         /* 3. CAPÇALERA INTEL·LIGENT */
-        .navbar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 65px;
-            background: var(--nav-bg); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; z-index: 2000; 
-            transition: top 0.3s ease-in-out;
-        }
-        .navbar.hidden { top: -75px; }
-        
-        .navbar-content {
-            width: 100%; max-width: 900px; margin: 0 auto;
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
-        }
-        .logo { font-weight: bold; color: var(--accent); font-size: 1.2rem; }
+     /* NAVBAR PRINCIPAL */
+.navbar {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 95px; /* Alçada total: 60px de contingut + 35px de tren */
+    background: var(--nav-bg); 
+    border-bottom: 1px solid var(--border);
+    display: flex; 
+    flex-direction: column; /* Apila contingut i tren */
+    z-index: 2000; 
+    transition: top 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+/* L'ESTAT AMAGAT (Ara sí, aquí el tens!) */
+.navbar.hidden { 
+    top: -100px; /* Puja prou per amagar els 95px de barra */
+}
+
+/* CONTINGUT (Logo i Botó) */
+.navbar-content {
+    width: 100%; 
+    max-width: 900px; 
+    margin: 0 auto;
+    height: 60px; /* Alçada per al logo */
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 0 20px;
+}
+
+/* ZONA DEL TREN */
+.nav-train-zone {
+    width: 100%;
+    height: 35px; 
+    position: relative;
+    background: transparent;
+}     
+
+/* 1. ANIMACIONS MAJESTUOSES */
+/* Revisa també l'animació per assegurar-te que comença ben lluny a l'esquerra */
+@keyframes moviment-dreta {
+    0% { transform: translateX(-1000px); } /* Comença fora de pantalla a l'esquerra */
+    100% { transform: translateX(110vw); }  /* Acaba fora de pantalla a la dreta */
+}
+
+@keyframes moviment-esquerra {
+    0% { transform: translateX(1200px) scaleX(-1); }
+    100% { transform: translateX(-110vw) scaleX(-1); }
+}
+
+/* 2. LES VIES (Amb balast i traverses) */
+.via-anada, .via-tornada {
+    position: absolute;
+    width: 100%;
+    height: 8px;
+    background: #333; /* Balast */
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 12px, #555 12px, #555 15px);
+    border-top: 1px solid #888;
+    border-bottom: 1px solid #888;
+}
+.via-anada { bottom: 2px; }
+.via-tornada { bottom: 20px; }
+
+/* 3. ESTRUCTURA DELS TRENS */
+.unitat-tren {
+    position: absolute;
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+    will-change: transform;
+}
+
+.anada {
+    bottom: 4px;
+    left: 0; /* Important: el punt d'origen és 0 perquè l'animació ja el mou */
+    animation: moviment-dreta 25s linear infinite;
+    animation-delay: 0s;
+}
+
+.tornada { bottom: 22px; animation: moviment-esquerra 32s linear infinite; animation-delay: -10s; }
+
+/* 4. DISSENY DELS VAGONS */
+.vago {
+    height: 14px; 
+    background: #fdfdfd;
+    position: relative;
+    width: 85px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    border-bottom: 2px solid #444; /* Zona de les rodes */
+}
+
+.cabina-davant { border-radius: 15px 2px 2px 2px; width: 90px; }
+.cabina-darrere { border-radius: 2px 15px 2px 2px; width: 90px; }
+
+/* Detall: Pantògraf */
+.pantograf {
+    position: absolute;
+    top: -5px; right: 10px;
+    width: 12px; height: 5px;
+    border-left: 2px solid #999; border-top: 2px solid #999;
+    transform: skewX(-30deg);
+}
+
+/* Finestres i Franja */
+.franja-superior {
+    position: absolute; top: 3px; width: 100%; height: 4px;
+    background: #222; display: flex; justify-content: center; gap: 4px; padding: 0 5px;
+}
+.finestra { width: 8px; height: 2px; background: #444; border-radius: 1px; }
+
+.cabina-davant .franja-superior { border-radius: 5px 0 0 0; margin-left: 10px; width: calc(100% - 10px); }
+.cabina-darrere .franja-superior { border-radius: 0 5px 0 0; width: calc(100% - 10px); }
+
+/* Lliurea Avant */
+.decoracio-inferior {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 2px; /* Molt més estilitzada */
+    background: var(--avant-purple);
+    border-top: 1px solid var(--avant-orange);
+}
+
+.text-avant {
+    position: absolute;
+    bottom: 2px; /* Baixat 1px per centrar-lo millor */
+    width: 100%;
+    font-size: 6px;
+    font-weight: bold;
+    color: var(--avant-purple);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 5;
+    line-height: 1; /* Assegura que no hi hagi espais estranys */
+}
+
+/* "Des-girem" el text en el tren de tornada perquè es llegeixi bé */
+.tornada .text-avant {
+    transform: scaleX(-1);
+}
+
+   .logo { font-weight: bold; color: var(--accent); font-size: 1.2rem; }
         
         #dark-mode-toggle {
             background: none; border: 1px solid var(--border); border-radius: 8px;
@@ -116,16 +255,106 @@
         }
         .nav-btn:hover { background: var(--accent); color: white; }
 
+        /* --- FIX TRADUCTOR --- */
+
+/* 1. Evitem que Google mogui la web cap avall */
+body { 
+    top: 0 !important; 
+    position: static !important; 
+}
+
+/* 2. Amaguem NOMÉS la barra superior de Google, no el botó */
+.goog-te-banner-frame.skiptranslate, .goog-te-gadget-simple img {
+    display: none !important;
+}
+.goog-tooltip {
+    display: none !important;
+}
+.goog-tooltip:hover {
+    display: none !important;
+}
+.goog-text-highlight {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* 1. Forcem que el contenidor del traductor tingui mida i espai */
+#google_translate_element {
+    min-width: 130px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+}
+
+.goog-te-gadget-simple {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border) !important;
+    padding: 2px 8px !important;
+    border-radius: 6px !important;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.goog-te-gadget-simple:hover {
+    border-color: var(--accent) !important;
+}
+
+.goog-te-menu-value span {
+    color: var(--text) !important;
+    font-size: 12px !important;
+    font-family: inherit !important;
+}
+
+/* 4. Assegurem que la zona de trens no es mogui */
+.navbar {
+    overflow: visible !important; 
+}
+       
+/* 3. Evitem que el giny de Google mogui tota la pàgina cap avall */
+body { 
+    top: 0 !important; 
+}
+
+
     </style>
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="navbar-content">
-            <span class="logo">Comunitat 💬</span>
+   <header class="navbar">
+    <div class="navbar-content">
+        <div class="logo-container">
+            <img src="media/logo.jpg" alt="Logo Comunitat" style="height: 30px; width: auto;">
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div id="google_translate_element"></div>
             <button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
         </div>
-    </header>
+    </div>
+
+    <div class="nav-train-zone">
+        <div class="via-anada"></div>
+        <div class="via-tornada"></div>
+
+        <div class="unitat-tren anada">
+            <div class="vago cabina-davant"><div class="franja-superior"><div class="finestra"></div></div><span class="text-avant">Avant</span><div class="decoracio-inferior"></div></div>
+            <div class="vago"><div class="pantograf"></div><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
+            <div class="vago"><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
+            <div class="vago cabina-darrere"><div class="franja-superior"><div class="finestra"></div></div><span class="text-avant">Avant</span><div class="decoracio-inferior"></div></div>
+        </div>
+
+        <div class="unitat-tren tornada">
+            <div class="vago cabina-davant"><div class="franja-superior"><div class="finestra"></div></div><span class="text-avant">Avant</span><div class="decoracio-inferior"></div></div>
+            <div class="vago"><div class="pantograf"></div><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
+            <div class="vago"><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
+            <div class="vago cabina-darrere"><div class="franja-superior"><div class="finestra"></div></div><span class="text-avant">Avant</span><div class="decoracio-inferior"></div></div>
+        </div>
+    </div>
+</header>
 
     <div class="header-spacer"></div>
 
@@ -233,5 +462,19 @@
             slides[nextIdx].classList.add('active');
         }
     </script>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'ca', 
+            includedLanguages: 'es,en,fr,de,it', // Pots afegir els idiomes que vulguguis
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+
 </body>
 </html>
