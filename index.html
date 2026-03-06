@@ -398,9 +398,15 @@ body { top: 0 !important; }
     <div id="faq-container">
         
         <div class="faq-item">
-            <button class="faq-pregunta" onclick="toggleFaq(this)">Com demano l'accés? <span>+</span></button>
+            <button class="faq-pregunta" onclick="toggleFaq(this)">Fins a quina data puc formalitzar bitllets? <span>+</span></button>
             <div class="faq-resposta">
-                Has d'omplir el formulari de registre a la web oficial de la comunitat. Un cop validat, rebràs l'enllaç d'invitació.
+                <p>Actualment, el calendari de Renfe permet reservar a la línia Lleida-Barcelona fins al dia:</p>
+    
+    <div id="contenedor-data-renfe" style="background: #f4f4f4; padding: 10px; border-radius: 8px; font-weight: bold; display: inline-block;">
+      <span id="data-dinamica">Carregant calendari...</span>
+    </div>
+
+    <p><small>Nota: Aquesta data s'actualitza manualment segons la disponibilitat oficial.</small></p>
             </div>
         </div>
 
@@ -506,6 +512,37 @@ body { top: 0 !important; }
     }
 </script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+  (function() {
+    // 1. Assegura't que l'URL és el de l'última implementació
+    const urlAppScript = "https://script.google.com/macros/s/AKfycbyW-P7GhNwK9ErNZxrn9nyM23Sd-XjHTn3wy_ohcDB2sPy1SsqLCZYHJD9zEBmL0jgD/exec"; 
+    const elementData = document.getElementById("data-dinamica");
+
+    fetch(urlAppScript, {
+      method: "GET",
+      // No posem 'mode: no-cors' perquè llavors no podrem llegir la data
+      // Google necessita que seguim el redireccionament manualment
+      redirect: "follow" 
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Error en la resposta del servidor');
+      return response.json();
+    })
+    .then(data => {
+      if (data && data.last_date) {
+        elementData.innerText = data.last_date;
+      } else {
+        throw new Error('Dada buida');
+      }
+    })
+    .catch(error => {
+      console.error('Error detallat per a debug:', error);
+      // Si falla, el text es manté o mostra l'enllaç
+      elementData.innerHTML = '<a href="https://www.renfe.com" target="_blank" style="color:#007bff; font-size:0.8em;">Revisar a Renfe.com</a>';
+    });
+  })();
+</script>
 
 
 </body>
