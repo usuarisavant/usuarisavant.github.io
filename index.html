@@ -553,44 +553,34 @@ body.dark-mode .finestra {
     height: 35px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--card-bg); /* S'adapta al Dark Mode gràcies a la variable */
+    background: var(--card-bg);
     color: var(--text);
-    font-weight: bold;
     cursor: pointer !important;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    /* Això força a Safari a reconèixer l'esdeveniment de clic */
-    pointer-events: auto;
+    z-index: 3000; /* Per sobre de la navbar */
 }
 
-/* EL MENÚ DESPLEGABLE PERSONALITZAT */
+/* EL MENÚ DESPLEGABLE */
 .lang-menu {
-    display: none;
+    display: none; /* Amagat per defecte */
     position: absolute;
     top: 42px;
     right: 0;
-    background: var(--card-bg); /* També segueix el Dark Mode */
+    background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    z-index: 10000;
-    min-width: 160px;
-    overflow: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s;
-    opacity: 0;
-    visibility: hidden;
-    display: block !important; /* Canviem display none per opacity */
-    cursor: pointer !important;
+    min-width: 140px;
+    z-index: 3001;
 }
 
+/* LA CLAU PER DESPLEGAR: Safari necessita block, no només opacity */
 .lang-menu.show {
-    opacity: 1;
-    visibility: visible;
+    display: block !important;
 }
 
 .lang-menu button {
     width: 100%;
-    padding: 12px 15px;
+    padding: 12px;
     background: none;
     border: none;
     color: var(--text);
@@ -599,57 +589,24 @@ body.dark-mode .finestra {
     border-bottom: 1px solid var(--border);
 }
 
-.lang-menu button:hover { 
-    background: var(--accent); 
-    color: white; 
+/* AMAGAR GOOGLE SENSE BLOQUEJAR SCRIPTS */
+/* Amaguem el widget original de Google però el deixem "viu" pel sistema */
+#google_translate_element {
+    display: block !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
 }
 
-/* LA "MÀGIA": AMAGUEM ELS ELEMENTS NATIUS DE GOOGLE */
-#google_translate_element, 
-.goog-te-banner-frame, 
-.skiptranslate, 
-.goog-te-gadget { 
-    display: none !important; 
-}
-
-/* EVITAR QUE GOOGLE DESPLACI LA WEB CAP AVALL */
-body { top: 0 !important; }
-
-/* Bloqueig total de l'espai superior */
-html {
-    margin-top: 0px !important;
-    padding-top: 0px !important;
-}
-
-body {
-    top: 0px !important;
-    position: static !important; /* Molt important perquè no es desplaci */
-}
-
-/* Amaga el widget flotant de Google que apareix a les cantonades */
-.goog-te-gadget-icon, 
-.goog-te-gadget-simple, 
-.goog-te-menu-value span {
+.goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame, .goog-te-gadget-icon {
     display: none !important;
 }
 
-/* 1. Amagar el giny flotant i qualsevol residu de Google */
-iframe.goog-te-banner-frame, 
-.goog-te-balloon-frame, 
-#goog-gt-tt, 
-.goog-te-gadget-simple,
-.goog-te-menu-value,
-.skiptranslate:not(.translate-wrapper) {
+.skiptranslate:not(.translate-wrapper):not(.lang-menu):not(.lang-menu *) {
     display: none !important;
-    visibility: hidden !important;
-}
-}
-
-/* 3. Matar el "pop-up" que surt quan passes el ratolí per sobre del text */
-.goog-text-highlight {
-    background: none !important;
-    box-shadow: none !important;
-    box-sizing: border-box !important;
 }
 
 
@@ -699,21 +656,19 @@ iframe.goog-te-banner-frame,
         </div>
         
             <div class="nav-controls">
-      <div class="translate-wrapper notranslate" onclick="toggleLangMenu(event)">
-    <span>A文</span>
-    <div id="custom-lang-menu" class="lang-menu">
-        <button onclick="event.stopPropagation(); changeLanguage('ca')">Català</button>
-        <button onclick="event.stopPropagation(); changeLanguage('es')">Castellano</button>
-        <button onclick="event.stopPropagation(); changeLanguage('en')">English</button>
-        <button onclick="event.stopPropagation(); changeLanguage('fr')">Français</button>
-        <button onclick="event.stopPropagation(); changeLanguage('de')">Deutsch</button>
-    </div>
-</div>
-<button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
-<div id="google_translate_element"></div>
-
-
+    <div class="translate-wrapper notranslate" id="lang-wrapper">
+        <span>A文</span>
+        <div id="custom-lang-menu" class="lang-menu">
+            <button data-lang="ca">Català</button>
+            <button data-lang="es">Castellano</button>
+            <button data-lang="en">English</button>
+            <button data-lang="fr">Français</button>
+            <button data-lang="de">Deutsch</button>
         </div>
+    </div>
+    <button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+    <div id="google_translate_element"></div>
+</div>
             
         </div>
    
@@ -924,85 +879,64 @@ iframe.goog-te-banner-frame,
 
 <script>
 
-// 1. OBRE I TANCA EL MENÚ (Optimitzat per a iOS)
-function toggleLangMenu(e) {
-    if (e) {
-        e.stopPropagation();
-        e.preventDefault(); // Evita comportaments estranys a Safari
-    }
-    const menu = document.getElementById('custom-lang-menu');
-    menu.classList.toggle('show');
-}
+// --- 1. CONTROL DEL MENÚ ---
+const langWrapper = document.getElementById('lang-wrapper');
+const langMenu = document.getElementById('custom-lang-menu');
 
-// 2. CANVIA L'IDIOMA (Amb "Retry" per a Safari)
+langWrapper.addEventListener('click', function(e) {
+    e.stopPropagation();
+    langMenu.classList.toggle('show');
+});
+
+langMenu.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation(); 
+        
+        const lang = this.getAttribute('data-lang');
+        changeLanguage(lang);
+        
+        langMenu.classList.remove('show'); 
+    });
+});
+
+document.addEventListener('click', () => langMenu.classList.remove('show'));
+
+// --- 2. EL MOTOR DE TRADUCCIÓ ---
 function changeLanguage(langCode) {
-    // Tancament immediat per UX
-    const menu = document.getElementById('custom-lang-menu');
-    if (menu) menu.classList.remove('show');
+    console.log("Forçant canvi d'idioma a: " + langCode);
 
-    // Intentem trobar el selector de Google
-    const intentarTraduccio = () => {
-        const select = document.querySelector('#google_translate_element select');
-        if (select) {
-            select.value = langCode;
-            select.dispatchEvent(new Event('change'));
-        } else {
-            // Si Safari encara no ha carregat el selector, ho tornem a provar en 200ms
-            setTimeout(intentarTraduccio, 200);
-        }
-    };
+    // 1. Definim el valor de la traducció (Origen: ca -> Destí: langCode)
+    // Si trien 'ca', buidem la cookie per restaurar l'original
+    const v = (langCode === 'ca') ? '' : '/ca/' + langCode;
 
-    intentarTraduccio();
+    // 2. Escrivim la cookie que Google Translate necessita
+    // La posem per al domini actual i per a l'arrel (/)
+    document.cookie = "googtrans=" + v + "; path=/";
+    document.cookie = "googtrans=" + v + "; expires=Thu, 01 Jan 2070 00:00:00 UTC; path=/";
+    
+    // 3. RECARREGUEM LA PÀGINA
+    // En recarregar, Google llegirà la cookie i traduirà automàticament
+    location.reload();
 }
 
-// 3. TANCA EL MENÚ SI CLIQUES FORA (Afegim touchstart per a iPhone)
-const handleOutsideClick = (event) => {
-    if (!event.target.closest('.translate-wrapper')) {
-        const menu = document.getElementById('custom-lang-menu');
-        if (menu && menu.classList.contains('show')) {
-            menu.classList.remove('show');
-        }
-    }
-};
 
-window.addEventListener('click', handleOutsideClick);
-window.addEventListener('touchstart', handleOutsideClick, { passive: true });
-
-// 3. Inicialitza el motor silenciós de Google
+// --- 3. INICIALITZACIÓ DE GOOGLE ---
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
         pageLanguage: 'ca',
         includedLanguages: 'ca,es,en,fr,de',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // Aquesta línia és clau
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false
     }, 'google_translate_element');
 }
 
-// 4. "Guardià" per evitar que Google posi la seva barra superior (banner)
+// --- 4. NETEJA DE BANNERS ---
 setInterval(() => {
-    // Forcem la posició del body per si Google la intenta canviar
-    if (document.body.style.top !== "0px") {
-        document.body.style.top = "0px";
-    }
-
-    // Busquem i eliminem la "rodeta" i el banner superior
-    const elementsParaBorrar = [
-        '.goog-te-banner-frame',
-        '#goog-gt-tt',
-        '.goog-te-balloon-frame',
-        '.skiptranslate:not(.translate-wrapper)' // Amaga tot el de Google excepte el TEU botó
-    ];
-
-    elementsParaBorrar.forEach(selector => {
-        const el = document.querySelector(selector);
-        if (el) {
-            el.style.display = 'none';
-            el.style.visibility = 'hidden';
-        }
-    });
-}, 300); // Execució cada 300ms per ser més ràpids que Google
-
-
+    const googleFrame = document.querySelector('.goog-te-banner-frame');
+    if (googleFrame) googleFrame.style.display = 'none';
+    document.body.style.top = '0px';
+}, 1000);
 
 </script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
