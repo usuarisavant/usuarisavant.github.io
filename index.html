@@ -85,7 +85,7 @@
     display: flex;
     align-items: center;
     /* Ajustem la separació: 16px - 20px és l'ideal per a mòbils */
-    gap: 24px; 
+    gap: 18px; 
     
     /* Ens assegurem que tot el bloc s'alineï a la dreta del contenidor */
     margin-left: auto; 
@@ -621,10 +621,25 @@ body {
     position: static !important; /* Molt important perquè no es desplaci */
 }
 
-/* Amaguem la bafarada que surt en posar el ratolí sobre el text traduït */
-#goog-gt-tt, .goog-te-balloon-frame {
+/* Amaga el widget flotant de Google que apareix a les cantonades */
+.goog-te-gadget-icon, 
+.goog-te-gadget-simple, 
+.goog-te-menu-value span {
+    display: none !important;
+}
+
+/* Amaga qualsevol bafarada o tooltip que Google intenti injectar */
+#goog-gt-tt, 
+.goog-te-balloon-frame, 
+#goog-gt-thumb {
     display: none !important;
     visibility: hidden !important;
+}
+
+/* Evita que el text original aparegui en fer hover (molt comú en Firefox) */
+.goog-text-highlight {
+    background: none !important;
+    box-shadow: none !important;
 }
 
 
@@ -707,7 +722,7 @@ body {
                         <div class="franja-superior">
                 <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
             </div>
-            <span class="text-avant">Avant</span>
+            <span class="text-avant notranslate" translate="no">Avant</span> 
             <div class="decoracio-inferior"></div>
         </div>
         <div class="vago"><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
@@ -717,7 +732,7 @@ body {
             <div class="franja-superior">
                 <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
             </div>
-            <span class="text-avant">Avant</span>
+            <span class="text-avant notranslate" translate="no">Avant</span>
             <div class="decoracio-inferior"></div>
         </div>
     </div>
@@ -728,7 +743,7 @@ body {
             <div class="franja-superior">
                 <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
             </div>
-            <span class="text-avant">Avant</span>
+           <span class="text-avant notranslate" translate="no">Avant</span>
             <div class="decoracio-inferior"></div>
         </div>
         <div class="vago">
@@ -748,7 +763,7 @@ body {
             <div class="franja-superior">
                 <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
             </div>
-            <span class="text-avant">Avant</span>
+            <span class="text-avant notranslate" translate="no">Avant</span>
             <div class="decoracio-inferior"></div>
         </div>
     </div>
@@ -947,9 +962,19 @@ function googleTranslateElementInit() {
 
 // 4. "Guardià" per evitar que Google posi la seva barra superior (banner)
 setInterval(() => {
+    // Força la posició a dalt (per si Google mou el body)
     document.body.style.top = "0px";
-    const gBar = document.querySelector('.goog-te-banner-frame');
-    if (gBar) gBar.style.display = 'none';
+    
+    // Busca elements de Google que s'hagin colat
+    const gBanner = document.querySelector('.goog-te-banner-frame');
+    const gWidget = document.querySelector('.skiptranslate');
+    
+    if (gBanner) gBanner.style.display = 'none';
+    
+    // Si la "rodona" apareix dins d'un div skiptranslate que no sigui el nostre
+    if (gWidget && !gWidget.innerHTML.includes('A文')) {
+        gWidget.style.visibility = 'hidden';
+    }
 }, 500);
 
 
