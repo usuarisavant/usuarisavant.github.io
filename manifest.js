@@ -1,5 +1,5 @@
 {
-  "name": "Avanteros Pringats",
+  "name": "AvanterosPringats",
   "short_name": "Avanteros",
   "start_url": "index.html",
   "display": "standalone",
