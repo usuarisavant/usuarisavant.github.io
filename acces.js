@@ -1,41 +1,44 @@
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const botoInstall = document.getElementById('bt-install');
     let eventInstalacio;
+
+    console.log("Script d'accés iniciat. Botó trobat:", !!botoInstall);
 
     // 1. Detecció d'iOS (Safari)
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-    if (isIOS) {
-        // A l'iPhone el mostrem SI O SI perquè no tenim 'beforeinstallprompt'
-        console.log("Detectat iOS: mostrant botó manual.");
-        if (botoInstall) {
-            botoInstall.style.display = 'block';
-            botoInstall.innerHTML = "📲 Com instal·lar a l'iPhone";
-        }
+    if (isIOS && botoInstall) {
+        console.log("Detectat iOS: Forçant visibilitat.");
+        botoInstall.style.display = 'block';
+        botoInstall.innerHTML = "📲 Instal·lar App (iOS)";
     }
 
-    // 2. Lògica per a Android (Chrome)
+    // 2. Lògica per a Android/Brave (Chrome-based)
     window.addEventListener('beforeinstallprompt', (e) => {
+        console.log("Esdeveniment beforeinstallprompt detectat!");
         e.preventDefault(); 
         eventInstalacio = e; 
         if (botoInstall) {
             botoInstall.style.display = 'block';
-            botoInstall.innerHTML = "📲 Instal·lar App Usuaris Avant";
+            // No canviem el text aquí si ja és iOS per evitar confusions
+            if (!isIOS) botoInstall.innerHTML = "📲 Instal·lar App Usuaris Avant";
         }
     });
 
     // 3. Acció al clicar
     if (botoInstall) {
-        botoInstall.addEventListener('click', () => {
+        botoInstall.onclick = () => {
             if (eventInstalacio) {
-                // Estem a Android
                 eventInstalacio.prompt();
+                eventInstalacio.userChoice.then((choice) => {
+                    if (choice.outcome === 'accepted') console.log('App instal·lada');
+                    eventInstalacio = null;
+                });
             } else if (isIOS) {
-                // Estem a l'iPhone: Instruccions visuals
-                alert("Per instal·lar l'App al teu iPhone:\n\n1. Clica el botó 'Compartir' (el quadrat amb la fletxa cap amunt).\n2. Tria 'Afegir a la pantalla d'inici'.");
+                alert("Per instal·lar a l'iPhone:\n\n1. Clica 'Compartir' (quadrat amb fletxa).\n2. Tria 'Afegir a la pantalla d'inici'.");
             } else {
-                alert("Aquesta opció és per a mòbils. A l'ordinador, pots crear un accés directe des del menú del navegador.");
+                alert("Si no surt el cartell d'instal·lar, cerca l'opció 'Instal·lar aplicació' al menú del teu navegador.");
             }
-        });
+        };
     }
 });
