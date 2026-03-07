@@ -902,22 +902,36 @@ langMenu.querySelectorAll('button').forEach(btn => {
 
 document.addEventListener('click', () => langMenu.classList.remove('show'));
 
-// --- 2. EL MOTOR DE TRADUCCIÓ ---
 function changeLanguage(langCode) {
-    console.log("Forçant canvi d'idioma a: " + langCode);
+    console.log("Sol·licitant canvi a: " + langCode);
 
-    // 1. Definim el valor de la traducció (Origen: ca -> Destí: langCode)
-    // Si trien 'ca', buidem la cookie per restaurar l'original
-    const v = (langCode === 'ca') ? '' : '/ca/' + langCode;
+    // 1. Intentem trobar el selector de Google immediatament
+    const selectEl = document.querySelector('.goog-te-combo');
 
-    // 2. Escrivim la cookie que Google Translate necessita
-    // La posem per al domini actual i per a l'arrel (/)
-    document.cookie = "googtrans=" + v + "; path=/";
-    document.cookie = "googtrans=" + v + "; expires=Thu, 01 Jan 2070 00:00:00 UTC; path=/";
-    
-    // 3. RECARREGUEM LA PÀGINA
-    // En recarregar, Google llegirà la cookie i traduirà automàticament
-    location.reload();
+    if (selectEl) {
+        // Si ja existeix, canviem l'idioma directament
+        selectEl.value = (langCode === 'ca') ? '' : langCode;
+        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+        // 2. Si NO existeix (Google encara carrega), creem un "Observador"
+        console.warn("Esperant que Google estigui llest...");
+        
+        const observer = new MutationObserver((mutations, obs) => {
+            const retrySelect = document.querySelector('.goog-te-combo');
+            if (retrySelect) {
+                retrySelect.value = (langCode === 'ca') ? '' : langCode;
+                retrySelect.dispatchEvent(new Event('change', { bubbles: true }));
+                obs.disconnect(); // Deixem d'observar un cop fet el canvi
+                console.log("✅ Traducció aplicada després d'esperar.");
+            }
+        });
+
+        // Vigilem tot el document per si apareix el menú de Google
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        // Per si de cas l'observador falla, intentem despertar Google
+        if (typeof googleTranslateElementInit === 'function') googleTranslateElementInit();
+    }
 }
 
 
@@ -926,7 +940,6 @@ function googleTranslateElementInit() {
     new google.translate.TranslateElement({
         pageLanguage: 'ca',
         includedLanguages: 'ca,es,en,fr,de',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false
     }, 'google_translate_element');
 }
