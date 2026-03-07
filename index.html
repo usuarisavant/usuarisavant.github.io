@@ -43,22 +43,25 @@
 
 
 
-        /* 3. CAPÇALERA INTEL·LIGENT */
-     /* NAVBAR PRINCIPAL */
+   /* 3. CAPÇALERA INTEL·LIGENT (CORRECCIÓ) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px; /* Alçada augmentada per logo + trens */
+            background: var(--nav-bg);
+            z-index: 2000;
+            transition: top 0.4s ease-in-out;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: visible !important;
+        }
 
-.navbar-content {
-    padding: 0 15px !important; /* Dona aire als costats */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    box-sizing: border-box; /* Imprescindible perquè el padding no sumi amplada */
-}
-
-/* L'ESTAT AMAGAT (Ara sí, aquí el tens!) */
-.navbar.hidden { 
-    top: -100px; /* Puja prou per amagar els 95px de barra */
-}
+        .navbar.hidden {
+            top: -130px; /* Amaga tota la barra (logo + trens) */
+        }
 
 /* CONTINGUT (Logo i Botó) */
 .navbar-content {
@@ -96,12 +99,12 @@
 /* ZONA DEL TREN */
 .nav-train-zone {
     width: 100%;
-    height: 35px; 
+    height: 50px; /* Aquí estava el problema! Canvia-ho de 35px a 50px */
     position: relative;
     background: transparent;
     /* EL TALL MÀGIC: */
     overflow: hidden;
-}     
+}
 
 /* 1. ANIMACIONS MAJESTUOSES */
 /* Revisa també l'animació per assegurar-te que comença ben lluny a l'esquerra */
@@ -146,37 +149,74 @@
 
 .tornada { bottom: 22px; animation: moviment-esquerra 32s linear infinite; animation-delay: -10s; }
 
-/* 4. DISSENY DELS VAGONS */
+
+
+/* 1. EL COS DEL VAGÓ (Recuperem les corbes i el blanc pur) */
 .vago {
     height: 14px; 
-    background: #fdfdfd;
+    background: #fdfdfd !important;
     position: relative;
     width: 85px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    border-bottom: 2px solid #444; /* Zona de les rodes */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    border-bottom: 2px solid #444;
+    flex-shrink: 0;
+    margin: 0 1px;
+    display: flex;
+    flex-direction: column;
 }
 
+/* MORROS AERODINÀMICS (Tornem als valors originals que funcionaven) */
 .cabina-davant { border-radius: 15px 2px 2px 2px; width: 90px; }
 .cabina-darrere { border-radius: 2px 15px 2px 2px; width: 90px; }
 
-/* Detall: Pantògraf */
-.pantograf {
-    position: absolute;
-    top: -5px; right: 10px;
-    width: 12px; height: 5px;
-    border-left: 2px solid #999; border-top: 2px solid #999;
-    transform: skewX(-30deg);
-}
-
-/* Finestres i Franja */
+/* 2. LA FRANJA NEGRA (Blindada per no tallar el sostre) */
 .franja-superior {
-    position: absolute; top: 3px; width: 100%; height: 4px;
-    background: #222; display: flex; justify-content: center; gap: 4px; padding: 0 5px;
+    position: absolute;
+    top: 3px;          /* Això garanteix el sostre blanc */
+    left: 0;
+    width: 100%;
+    height: 4px;       /* Mantenim el gruix estilitzat */
+    background: #222 !important;
+    display: flex;
+    justify-content: space-evenly; 
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+    z-index: 5;
 }
-.finestra { width: 8px; height: 2px; background: #444; border-radius: 1px; }
 
-.cabina-davant .franja-superior { border-radius: 5px 0 0 0; margin-left: 10px; width: calc(100% - 10px); }
-.cabina-darrere .franja-superior { border-radius: 0 5px 0 0; width: calc(100% - 10px); }
+/* 3. LES FINESTRES */
+.finestra {
+    width: 12px;
+    height: 2px;
+    background: #444;
+    border-radius: 1px;
+}
+
+/* 4. AJUST ESPECÍFIC PER ALS EXTREMS (Sense carregar-nos el morro) */
+/* El secret aquí és que la franja negra "mor" abans d'arribar a la corba */
+.cabina-davant .franja-superior { 
+    margin-left: 15px; 
+    width: calc(100% - 15px);
+    border-radius: 8px 0 0 0; 
+}
+
+.cabina-darrere .franja-superior { 
+    margin-right: 15px; 
+    width: calc(100% - 15px);
+    border-radius: 0 8px 0 0; 
+}
+
+/* 5. FIX PER AL MODE FOSC (Perquè el sostre es vegi contra el negre) */
+body.dark-mode .vago {
+    background: #ffffff !important;
+    border-bottom-color: #222;
+}
+
+/* 6. CORRECCIÓ PER AL TREN DE TORNADA */
+/* Quan girem el tren, ens assegurem que la franja no es desplaci malament */
+.tornada .cabina-davant .franja-superior { margin-left: 15px; margin-right: 0; }
+.tornada .cabina-darrere .franja-superior { margin-right: 15px; margin-left: 0; }
 
 /* Lliurea Avant */
 .decoracio-inferior {
@@ -196,7 +236,7 @@
     font-weight: bold;
     color: var(--avant-purple);
     text-align: center;
-    text-transform: uppercase;
+    text-transform: capitalize;
     letter-spacing: 1px;
     z-index: 5;
     line-height: 1; /* Assegura que no hi hagi espais estranys */
@@ -206,6 +246,227 @@
 .tornada .text-avant {
     transform: scaleX(-1);
 }
+
+
+/* ======================================================
+   SOLUCIÓ DEFINITIVA: LLUMS AUTO-ORIENTABLES
+   ====================================================== */
+
+/* 1. Preparem les cabines per allotjar els llums */
+.cabina-davant, .cabina-darrere {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+/* 2. Creem els focus en posicions fixes respecte al vagó 
+      Davant (Nose) = cabina-darrere (la que té la corba a la dreta)
+      Darrere (Tail) = cabina-davant (la que té la corba a l'esquerra)
+*/
+.cabina-darrere::after, .cabina-davant::before {
+    content: "" !important;
+    position: absolute;
+    bottom: 3px;
+    width: 5px;
+    height: 3px;
+    border-radius: 2px;
+    z-index: 100;
+    transition: all 0.4s ease;
+    background: transparent; /* Apagats per defecte */
+}
+
+/* El blanc SEMPRE va a la punta de la cabina-darrere (Nose) */
+.cabina-darrere::after { right: 2px; }
+
+/* El vermell SEMPRE va a la punta de la cabina-davant (Tail) */
+.cabina-davant::before { left: 2px; }
+
+
+/* 3. ENCESA EN DARK MODE (Universal per a ambdós trens) */
+
+/* Focus Blanc davanter: Efecte Projector Real */
+body.dark-mode .unitat-tren .cabina-darrere::after {
+    background: #ffffff !important;
+    width: 8px; /* Una mica més gran per a més potència */
+    height: 6px;
+    
+    /* 1. El nucli brillant (brilla cap a totes direccions) */
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.8);
+    
+    /* 2. El feix de llum (Projectat endavant) */
+    /* Creem un pseudoelement invisible que conté el gradient */
+    display: flex;
+    align-items: center;
+}
+
+body.dark-mode .unitat-tren .cabina-darrere::after {
+    /* FEM SERVIR UN GRADIENT COM A "LLUM" QUE S'ESTÉN */
+    background: #fff !important;
+}
+
+/* Afegim el feix de llum llarg com a "brillantor" extra */
+body.dark-mode .unitat-tren .cabina-darrere::after {
+    filter: drop-shadow(0px 0px 2px white);
+}
+
+/* EL SECRET: Un feix de llum generat per gradient que no es difumina */
+body.dark-mode .unitat-tren .cabina-darrere::after {
+    box-shadow: 
+        0 0 10px 2px white, 
+        /* Creem el feix amb múltiples capes molt denses */
+        20px 0 15px 8px rgba(255,255,255,0.7),
+        60px 0 25px 12px rgba(255,255,255,0.5),
+        120px 0 40px 18px rgba(255,255,255,0.3),
+        200px 0 60px 25px rgba(255,255,255,0.1);
+}
+
+/* LLUM VERMELLA DE CUA AMB PROJECCIÓ A LA VIA */
+body.dark-mode .unitat-tren .cabina-davant::before {
+    content: "" !important;
+    background: #ff3333 !important; /* Vermell potent */
+    width: 7px;
+    height: 4px;
+    border-radius: 2px;
+    
+    /* 1. L'AURA EN VOLTANT DEL FAR (Llum a l'aire) */
+    box-shadow: 
+        0 0 10px 2px rgba(255, 0, 0, 0.9),  /* Resplendor nuclear */
+        
+        /* 2. EL FEIX PROJECTAT (Cap enrere i cap a la via) */
+        /* Projecció 1: Immediata a la via */
+        -15px 5px 15px 5px rgba(255, 0, 0, 0.7), 
+        
+        /* Projecció 2: Estela llarga que es difumina en l'aire */
+        -40px 8px 25px 10px rgba(255, 0, 0, 0.4),
+        
+        /* Projecció 3: Cua de llum tènue a la llunyania */
+        -80px 12px 40px 15px rgba(255, 0, 0, 0.1);
+
+    /* 3. EL TRUC DEL GRADIENT (Per donar direccionalitat al feix) */
+    /* Creem una "llum de fre" que s'estén cap a l'esquerra (en darrere) */
+    filter: drop-shadow(-10px 0px 5px rgba(255, 0, 0, 0.8));
+    
+    /* Ens assegurem que la llum surti de la punta */
+    left: 2px;
+    bottom: 3px;
+    z-index: 100;
+}
+
+/* OPCIONAL: Si vols que la llum de cua de tornada també projecti bé,
+   el scaleX(-1) ja s'encarrega de girar les ombres negatives a positives automàticament. */
+
+/* =========================================
+   PANTÒGRAF: POSICIÓ FIXA I SENSE MIRALL
+   ========================================= */
+
+/* 1. TREN D'ANADA (Ajustat més a la dreta, sobre el sostre) */
+.anada .cabina-darrere .pantograf {
+    display: block !important;
+    position: absolute;
+    top: -10px;
+    /* Hem passat de -4px a 10px per ficar-lo dins del vagó */
+    left: 10px !important;       
+    right: auto !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-left: 3px solid #444 !important;
+    border-top: 2.5px solid #666 !important;
+    transform: skewX(25deg) !important;
+    z-index: 2000;
+}
+
+/* 2. TREN DE TORNADA (Ajustat més a l'esquerra, sobre el sostre) */
+.tornada .cabina-darrere .pantograf {
+    display: block !important;
+    position: absolute;
+    top: -10px;
+    /* Com que el vagó està girat, augmentem el valor per moure'l cap a l'esquerra visual */
+    left: 10px !important;       
+    right: auto !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-left: 3px solid #444 !important;
+    border-top: 2.5px solid #666 !important;
+    /* Mantenim el scaleX(1) per bloquejar el mirall */
+    transform: scaleX(1) skewX(-25deg) !important; 
+    z-index: 2000;
+}
+
+/* =========================================
+   RECALIBRACIÓ DE XISPES (POSICIÓ I POTÈNCIA)
+   ========================================= */
+
+/* 1. CONFIGURACIÓ DE LA XISPA (Base comuna) */
+.pantograf::after {
+    content: "" !important;
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 9999 !important; /* Per sobre de tot */
+    pointer-events: none;
+}
+
+/* 2. POSICIONAMENT QUIRÚRGIC A LA PUNTA */
+
+/* Tren Anada (Punta a la dreta) */
+.anada .cabina-darrere .pantograf::after { 
+    top: -3px; 
+    right: -3px; 
+    left: auto; 
+}
+
+/* Tren Tornada (Punta a l'esquerra - Cal ajustar pel des-gir) */
+.tornada .cabina-darrere .pantograf::after { 
+    top: -3px; 
+    left: -3px; /* Forcem la punta esquerra */
+    right: auto; 
+    animation-delay: 0.5s; /* Desfasa la xispa del tren de tornada */
+}
+
+/* 3. L'ANIMACIÓ DE L'ARC VOLTAIC (Més potent) */
+body.dark-mode .pantograf::after {
+    /* Augmentem la durada a 2s per fer-ho més dramàtic */
+    animation: arc-electric-ultra 2s infinite;
+}
+
+@keyframes arc-electric-ultra {
+    /* Silenci elèctric */
+    0%, 10%, 25%, 80%, 100% { 
+        opacity: 0; 
+        transform: scale(0.2); 
+    }
+    /* Primer esclat */
+    12% { 
+        opacity: 1; 
+        transform: scale(4); 
+        background: #fff;
+        box-shadow: 0 0 15px 10px #00ffff, 0 0 30px 20px rgba(0, 255, 255, 0.5);
+    }
+    14% { opacity: 0.2; transform: scale(1); }
+    /* Segon esclat (més ràpid) */
+    16% { 
+        opacity: 1; 
+        transform: scale(5); 
+        background: #fff;
+        box-shadow: 0 0 20px 15px #00ffff, 0 0 40px 25px rgba(0, 255, 255, 0.6);
+    }
+    20% { opacity: 0; transform: scale(0.2); }
+}
+
+/* 4. EVITAR QUE EL VAGÓ TALLI LA LLUM */
+.anada .cabina-darrere, .tornada .cabina-darrere {
+    overflow: visible !important; /* Permet que la resplendor surti del vagó */
+}
+
+/* Finestres Realistes */
+body.dark-mode .finestra {
+    background: #fff9eb !important;
+    box-shadow: 0 0 5px rgba(255, 249, 235, 0.6);
+}
+
+
 
    .logo { font-weight: bold; color: var(--accent); font-size: 1.2rem; }
         
@@ -273,82 +534,120 @@
         }
         .nav-btn:hover { background: var(--accent); color: white; }
 
-        /* --- FIX TRADUCTOR --- */
-
-
-
-/* 2. Amaguem NOMÉS la barra superior de Google, no el botó */
-.goog-te-banner-frame.skiptranslate, .goog-te-gadget-simple img {
-    display: none !important;
-}
-.goog-tooltip {
-    display: none !important;
-}
-.goog-tooltip:hover {
-    display: none !important;
-}
-.goog-text-highlight {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+     
+/* El contenidor del botó */
+.translate-wrapper {
+    position: relative; /* Base per a les capes */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px; 
+    height: 38px;
+    border-radius: 8px;
+    background-color: var(--bg-button, #f0f0f0);
+    border: 1px solid var(--border-color, #ccc);
+    cursor: pointer;
+    /* overflow: hidden; /* Evita que el text de Google s'escapi */
 }
 
-/* 1. Forcem que el contenidor del traductor tingui mida i espai */
-/* 1. Contenidor principal */
-#google_translate_element {
-    min-width: 120px;
-    height: 35px;
+/* La icona A文 (Visual) */
+.custom-translate-icon {
+    position: absolute;
+    z-index: 1; /* Capa inferior */
+    pointer-events: none; /* EL TRUC: el ratolí "travessa" la icona */
+    color: var(--text-color, #333);
+    font-weight: bold;
     display: flex;
     align-items: center;
 }
 
-/* 2. LA CÀPSULA DEL BOTÓ (Forcem que es vegi sí o sí) */
-.goog-te-gadget-simple {
-    display: flex !important;
-    align-items: center !important;
-    background-color: #ffffff !important; /* Fons blanc forçat */
-    border: 2px solid #3498db !important; /* Vora blava forçada perquè el vegis */
-    padding: 4px 8px !important;
-    border-radius: 6px !important;
-    min-height: 25px !important;
-    min-width: 100px !important;
+/* El selector de Google (Invisible però a sobre) */
+#google_translate_element {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 10 !important; /* Molt per sobre de la icona */
+    opacity: 0 !important;  /* No es veu, però hi és */
 }
 
-/* 3. El text de dins del botó */
-.goog-te-gadget-simple span {
-    color: #000000 !important; /* Text negre forçat */
-    font-size: 13px !important;
+/* Forcem que l'element que Google injecta també sigui gran */
+#google_translate_element select {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    cursor: pointer !important;
 }
 
-/* 4. Amaguem icones molestes de Google, però no el botó */
-.goog-te-gadget-simple img {
+/* Bloqueig total de l'espai superior */
+html {
+    margin-top: 0px !important;
+    padding-top: 0px !important;
+}
+
+body {
+    top: 0px !important;
+    position: static !important; /* Molt important perquè no es desplaci */
+}
+
+/* Amaguem la bafarada que surt en posar el ratolí sobre el text traduït */
+#goog-gt-tt, .goog-te-balloon-frame {
     display: none !important;
-}
-.goog-te-banner-frame {
-    display: none !important;
-}
-body { top: 0 !important; }
-
-/* Això fa que el "Carregant..." s'esborri netament quan arriba Google */
-#google_translate_element font {
-    display: none !important;
+    visibility: hidden !important;
 }
 
-.goog-te-gadget-simple:hover {
-    border-color: var(--accent) !important;
-}
-
-.goog-te-menu-value span {
-    color: var(--text) !important;
-    font-size: 12px !important;
-    font-family: inherit !important;
-}
 
 /* 4. Assegurem que la zona de trens no es mogui */
 .navbar {
     overflow: visible !important; 
 }
-       
+ 
+
+/* Estil per al menú desplegable d'idiomes (Dark Mode) */
+body.dark-mode .goog-te-menu-frame {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+}
+
+body.dark-mode .goog-te-menu2 {
+    background-color: #2d2d2d !important; /* Fons fosc */
+    border: 1px solid #444 !important;
+}
+
+body.dark-mode .goog-te-menu2-item div, 
+body.dark-mode .goog-te-menu2-item:link div, 
+body.dark-mode .goog-te-menu2-item:visited div {
+    color: #eee !important; /* Text clar */
+    background-color: #2d2d2d !important;
+}
+
+body.dark-mode .goog-te-menu2-item:hover div {
+    background-color: #444 !important; /* Color en passar el ratolí */
+}
+
+/* Aquest és el secret per mantenir els marges de 900px */
+.navbar-train-container {
+    width: 100%;
+    max-width: 900px; /* Mateixa amplada que la resta del web */
+    margin: 0 auto;   /* Centra el bloc al mig de la pantalla */
+    position: relative;
+    overflow: hidden; /* Fa que els trens apareguin/desapareguin als marges del bloc de 900px */
+}
+
+/* Ajustem la zona interna */
+.nav-train-zone {
+    width: 100%;
+    height: 50px;
+    position: relative;
+    background: transparent;
+    /* Ja no cal l'overflow:hidden aquí perquè el pare ja el té */
+}
+
+/* Això fa que el tren aparegui i desaparegui suaument de la zona central */
+.navbar-train-container {
+    mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
+}
 
     </style>
 </head>
@@ -360,32 +659,84 @@ body { top: 0 !important; }
             <img src="media/logo.jpg" alt="Logo Comunitat" style="height: 30px; width: auto;">
         </div>
         
-        <div class="nav-controls">
-            <div id="google_translate_element"></div>
+            <div class="nav-controls">
+        <div class="translate-wrapper" title="Canviar idioma">
+        <div class="custom-translate-icon">
+            <span>A</span><span style="font-size: 0.8em; margin-left: 2px;">文</span>
+            </div>
+        
+        <div id="google_translate_element"></div>
+        </div>
             <button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
         </div>
     </div>
 
-    <div class="nav-train-zone">
+    <div class="navbar-train-container"><div class="nav-train-zone">
         <div class="via-anada"></div>
         <div class="via-tornada"></div>
 
-        <div class="unitat-tren anada">
-            <div class="vago cabina-davant"><div class="franja-superior"><div class="finestra"></div></div><span class="text-avant">Avant</span><div class="decoracio-inferior"></div></div>
-            <div class="vago"><div class="pantograf"></div><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
-            <div class="vago"><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
-            <div class="vago cabina-darrere"><div class="franja-superior"><div class="finestra"></div></div><span class="text-avant">Avant</span><div class="decoracio-inferior"></div></div>
-        </div>
+     <div class="nav-train-zone">
+    <div class="via-anada"></div>
+    <div class="via-tornada"></div>
 
-        <div class="unitat-tren tornada">
-            <div class="vago cabina-davant"><div class="franja-superior"><div class="finestra"></div></div><span class="text-avant">Avant</span><div class="decoracio-inferior"></div></div>
-            <div class="vago"><div class="pantograf"></div><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
-            <div class="vago"><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
-            <div class="vago cabina-darrere"><div class="franja-superior"><div class="finestra"></div></div><span class="text-avant">Avant</span><div class="decoracio-inferior"></div></div>
+ 
+<div class="unitat-tren tornada">
+        <div class="vago cabina-davant">
+                        <div class="franja-superior">
+                <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
+            </div>
+            <span class="text-avant">Avant</span>
+            <div class="decoracio-inferior"></div>
         </div>
+        <div class="vago"><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
+        <div class="vago"><div class="franja-superior"><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div></div><div class="decoracio-inferior"></div></div>
+        <div class="vago cabina-darrere">
+            <div class="pantograf"></div>
+            <div class="franja-superior">
+                <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
+            </div>
+            <span class="text-avant">Avant</span>
+            <div class="decoracio-inferior"></div>
+        </div>
+    </div>
+
+
+    <div class="unitat-tren anada">
+        <div class="vago cabina-davant">
+            <div class="franja-superior">
+                <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
+            </div>
+            <span class="text-avant">Avant</span>
+            <div class="decoracio-inferior"></div>
+        </div>
+        <div class="vago">
+            <div class="franja-superior">
+                <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
+            </div>
+            <div class="decoracio-inferior"></div>
+        </div>
+        <div class="vago">
+            <div class="franja-superior">
+                <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
+            </div>
+            <div class="decoracio-inferior"></div>
+        </div>
+        <div class="vago cabina-darrere">
+            <div class="pantograf"></div>
+            <div class="franja-superior">
+                <div class="finestra"></div><div class="finestra"></div><div class="finestra"></div><div class="finestra"></div>
+            </div>
+            <span class="text-avant">Avant</span>
+            <div class="decoracio-inferior"></div>
+        </div>
+    </div>
+</div>
+     
+       
+</div>
 
     
-
+  </div>
     </div>
 </header>
 
@@ -502,16 +853,37 @@ body { top: 0 !important; }
         }
     </script>
 
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'ca', 
-            includedLanguages: 'es,en,fr,de,it',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
+<script>
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'ca',
+        // Canviem a la versió horitzontal estàndard, que és més compatible
+        layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+
+// Aquesta funció s'executarà cada vegada que l'usuari canviï d'idioma
+function hideGoogleBar() {
+    const googleBar = document.querySelector('.goog-te-banner-frame');
+    if (googleBar) {
+        googleBar.style.display = 'none';
     }
+    document.documentElement.style.marginTop = '0';
+    document.body.style.top = '0';
+}
+
+// Escultem quan Google fa canvis per tornar a amagar la barra
+document.addEventListener('DOMSubtreeModified', function(e) {
+    if (e.target.tagName === 'HTML' || e.target.className === 'goog-te-banner-frame') {
+        hideGoogleBar();
+    }
+});
+
+
+
 </script>
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 
 <script>
   (function() {
@@ -543,6 +915,9 @@ body { top: 0 !important; }
     });
   })();
 </script>
+
+
+
 
 
 </body>
