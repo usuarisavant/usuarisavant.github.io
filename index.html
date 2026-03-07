@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comunitat i FAQ</title>
     <style>
+* {
+    box-sizing: border-box;
+}
+
         /* 1. VARIABLES I TEMES */
         :root {
             --bg: #f4f4f9;
@@ -63,24 +67,26 @@
             top: -130px; /* Amaga tota la barra (logo + trens) */
         }
 
-/* CONTINGUT (Logo i Botó) */
 .navbar-content {
-    width: 100%; 
-    max-width: 900px; 
-    margin: 0 auto;
-    height: 60px; /* Alçada per al logo */
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 0 20px;
+    width: 100%;
+    max-width: 900px; /* Mateixa amplada que les targetes FAQ */
+    margin: 0 auto;   /* Centra el bloc al mig */
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;  /* Padding lateral per coincidir amb el body */
+    box-sizing: border-box; /* Important perquè el padding no sumi amplada */
 }
 
-/* El grup de botons (Traductor + Lluna) */
 .nav-controls {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espai entre el traductor i la lluna */
-    padding-right: 5px; /* Seguretat extra per al botó dark mode */
+    /* Ajustem la separació: 16px - 20px és l'ideal per a mòbils */
+    gap: 24px; 
+    
+    /* Ens assegurem que tot el bloc s'alineï a la dreta del contenidor */
+    margin-left: auto; 
 }
 
 #dark-mode-toggle {
@@ -535,50 +541,65 @@ body.dark-mode .finestra {
         .nav-btn:hover { background: var(--accent); color: white; }
 
      
-/* El contenidor del botó */
+/* EL BOTÓ VISUAL */
 .translate-wrapper {
-    position: relative; /* Base per a les capes */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px; 
-    height: 38px;
-    border-radius: 8px;
-    background-color: var(--bg-button, #f0f0f0);
-    border: 1px solid var(--border-color, #ccc);
-    cursor: pointer;
-    /* overflow: hidden; /* Evita que el text de Google s'escapi */
-}
-
-/* La icona A文 (Visual) */
-.custom-translate-icon {
-    position: absolute;
-    z-index: 1; /* Capa inferior */
-    pointer-events: none; /* EL TRUC: el ratolí "travessa" la icona */
-    color: var(--text-color, #333);
-    font-weight: bold;
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 55px;
+    height: 35px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--card-bg); /* S'adapta al Dark Mode gràcies a la variable */
+    color: var(--text);
+    font-weight: bold;
 }
 
-/* El selector de Google (Invisible però a sobre) */
-#google_translate_element {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    z-index: 10 !important; /* Molt per sobre de la icona */
-    opacity: 0 !important;  /* No es veu, però hi és */
+/* EL MENÚ DESPLEGABLE PERSONALITZAT */
+.lang-menu {
+    display: none;
+    position: absolute;
+    top: 42px;
+    right: 0;
+    background: var(--card-bg); /* També segueix el Dark Mode */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 10000;
+    min-width: 160px;
+    overflow: hidden;
 }
 
-/* Forcem que l'element que Google injecta també sigui gran */
-#google_translate_element select {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    cursor: pointer !important;
+.lang-menu.show { display: block; }
+
+.lang-menu button {
+    width: 100%;
+    padding: 12px 15px;
+    background: none;
+    border: none;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
 }
+
+.lang-menu button:hover { 
+    background: var(--accent); 
+    color: white; 
+}
+
+/* LA "MÀGIA": AMAGUEM ELS ELEMENTS NATIUS DE GOOGLE */
+#google_translate_element, 
+.goog-te-banner-frame, 
+.skiptranslate, 
+.goog-te-gadget { 
+    display: none !important; 
+}
+
+/* EVITAR QUE GOOGLE DESPLACI LA WEB CAP AVALL */
+body { top: 0 !important; }
 
 /* Bloqueig total de l'espai superior */
 html {
@@ -603,27 +624,11 @@ body {
     overflow: visible !important; 
 }
  
-
-/* Estil per al menú desplegable d'idiomes (Dark Mode) */
-body.dark-mode .goog-te-menu-frame {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+ /* 4. CLASSE DE SEGURETAT (Pel botó A文) */
+.notranslate {
+    translate: no;
 }
 
-body.dark-mode .goog-te-menu2 {
-    background-color: #2d2d2d !important; /* Fons fosc */
-    border: 1px solid #444 !important;
-}
-
-body.dark-mode .goog-te-menu2-item div, 
-body.dark-mode .goog-te-menu2-item:link div, 
-body.dark-mode .goog-te-menu2-item:visited div {
-    color: #eee !important; /* Text clar */
-    background-color: #2d2d2d !important;
-}
-
-body.dark-mode .goog-te-menu2-item:hover div {
-    background-color: #444 !important; /* Color en passar el ratolí */
-}
 
 /* Aquest és el secret per mantenir els marges de 900px */
 .navbar-train-container {
@@ -656,20 +661,28 @@ body.dark-mode .goog-te-menu2-item:hover div {
    <header class="navbar">
     <div class="navbar-content">
         <div class="logo-container">
-            <img src="media/logo.jpg" alt="Logo Comunitat" style="height: 30px; width: auto;">
+            <img src="media/logo.png" alt="Logo Comunitat" style="height: 30px; width: auto;">
         </div>
         
             <div class="nav-controls">
-        <div class="translate-wrapper" title="Canviar idioma">
-        <div class="custom-translate-icon">
-            <span>A</span><span style="font-size: 0.8em; margin-left: 2px;">文</span>
-            </div>
-        
-        <div id="google_translate_element"></div>
-        </div>
-            <button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
-        </div>
+      <div class="translate-wrapper notranslate" onclick="toggleLangMenu(event)">
+    <span>A文</span>
+    <div id="custom-lang-menu" class="lang-menu">
+        <button onclick="changeLanguage('ca')">Català</button>
+        <button onclick="changeLanguage('es')">Castellano</button>
+        <button onclick="changeLanguage('en')">English</button>
+        <button onclick="changeLanguage('fr')">Français</button>
+        <button onclick="changeLanguage('de')">Deutsch</button>
     </div>
+</div>
+<button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+<div id="google_translate_element"></div>
+
+
+        </div>
+            
+        </div>
+   
 
     <div class="navbar-train-container"><div class="nav-train-zone">
         <div class="via-anada"></div>
@@ -854,31 +867,41 @@ body.dark-mode .goog-te-menu2-item:hover div {
     </script>
 
 <script>
+// 1. Mostra o amaga el teu menú
+function toggleLangMenu(e) {
+    e.stopPropagation();
+    document.getElementById('custom-lang-menu').classList.toggle('show');
+}
+
+// 2. La clau: connecta el teu botó amb el motor de Google
+function changeLanguage(langCode) {
+    const select = document.querySelector('#google_translate_element select');
+    if (select) {
+        select.value = langCode;
+        // Disparem l'esdeveniment 'change' perquè Google sàpiga que hem triat idioma
+        select.dispatchEvent(new Event('change'));
+    }
+    document.getElementById('custom-lang-menu').classList.remove('show');
+}
+
+// 3. Inicialitza el motor silenciós de Google
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
         pageLanguage: 'ca',
-        // Canviem a la versió horitzontal estàndard, que és més compatible
-        layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+        includedLanguages: 'ca,es,en,fr,de',
         autoDisplay: false
     }, 'google_translate_element');
 }
 
-// Aquesta funció s'executarà cada vegada que l'usuari canviï d'idioma
-function hideGoogleBar() {
-    const googleBar = document.querySelector('.goog-te-banner-frame');
-    if (googleBar) {
-        googleBar.style.display = 'none';
-    }
-    document.documentElement.style.marginTop = '0';
-    document.body.style.top = '0';
-}
+// 4. "Guardià" per evitar que Google posi la seva barra superior (banner)
+setInterval(() => {
+    document.body.style.top = "0px";
+    const gBar = document.querySelector('.goog-te-banner-frame');
+    if (gBar) gBar.style.display = 'none';
+}, 500);
 
-// Escultem quan Google fa canvis per tornar a amagar la barra
-document.addEventListener('DOMSubtreeModified', function(e) {
-    if (e.target.tagName === 'HTML' || e.target.className === 'goog-te-banner-frame') {
-        hideGoogleBar();
-    }
-});
+// Tanca el menú si l'usuari clica fora
+window.onclick = () => document.getElementById('custom-lang-menu').classList.remove('show');
 
 
 
