@@ -1,39 +1,41 @@
-// 1. Busquem el botó per la seva ID
-const botoInstall = document.getElementById('bt-install');
-let eventInstalacio;
+window.addEventListener('load', () => {
+    const botoInstall = document.getElementById('bt-install');
+    let eventInstalacio;
 
-// --- DETECCIÓ D'iOS (S'executa en carregar la pàgina) ---
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    // 1. Detecció d'iOS (Safari)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-if (isIOS) {
-    // Si és un iPhone, mostrem el botó directament perquè mai rebrà l'esdeveniment d'Android
-    botoInstall.style.display = 'block';
-    botoInstall.innerHTML = "📲 Instal·lar App (iOS)";
-}
+    if (isIOS) {
+        // A l'iPhone el mostrem SI O SI perquè no tenim 'beforeinstallprompt'
+        console.log("Detectat iOS: mostrant botó manual.");
+        if (botoInstall) {
+            botoInstall.style.display = 'block';
+            botoInstall.innerHTML = "📲 Com instal·lar a l'iPhone";
+        }
+    }
 
-// 2. Escoltador per a Android (Chrome)
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault(); // Aturem que surti automàticament
-    eventInstalacio = e; // Guardem l'esdeveniment
-    botoInstall.style.display = 'block'; // ARA mostrem el botó a Android
-});
+    // 2. Lògica per a Android (Chrome)
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); 
+        eventInstalacio = e; 
+        if (botoInstall) {
+            botoInstall.style.display = 'block';
+            botoInstall.innerHTML = "📲 Instal·lar App Usuaris Avant";
+        }
+    });
 
-// 3. Què passa quan cliquem el botó?
-botoInstall.addEventListener('click', () => {
-    if (eventInstalacio) {
-        // CAS ANDROID: Executem el prompt oficial
-        eventInstalacio.prompt(); 
-        eventInstalacio.userChoice.then((choice) => {
-            if (choice.outcome === 'accepted') {
-                console.log('L\'usuari ha instal·lat l\'app');
+    // 3. Acció al clicar
+    if (botoInstall) {
+        botoInstall.addEventListener('click', () => {
+            if (eventInstalacio) {
+                // Estem a Android
+                eventInstalacio.prompt();
+            } else if (isIOS) {
+                // Estem a l'iPhone: Instruccions visuals
+                alert("Per instal·lar l'App al teu iPhone:\n\n1. Clica el botó 'Compartir' (el quadrat amb la fletxa cap amunt).\n2. Tria 'Afegir a la pantalla d'inici'.");
+            } else {
+                alert("Aquesta opció és per a mòbils. A l'ordinador, pots crear un accés directe des del menú del navegador.");
             }
-            eventInstalacio = null;
         });
-    } else if (isIOS) {
-        // CAS iOS: Mostrem les instruccions manuals
-        alert("Per instal·lar a l'iPhone:\n\n1. Clica el botó 'Compartir' (el quadrat amb la fletxa cap amunt al menú de Safari).\n2. Deslletja cap avall i tria 'Afegir a la pantalla d'inici'.");
-    } else {
-        // CAS ORDINADOR o ALTRES: Missatge genèric
-        alert("Fes servir el menú del teu navegador per afegir aquesta web a l'escriptori.");
     }
 });
