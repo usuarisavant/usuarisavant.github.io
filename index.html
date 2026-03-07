@@ -553,10 +553,14 @@ body.dark-mode .finestra {
     height: 35px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    cursor: pointer;
     background: var(--card-bg); /* S'adapta al Dark Mode gràcies a la variable */
     color: var(--text);
     font-weight: bold;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    /* Això força a Safari a reconèixer l'esdeveniment de clic */
+    pointer-events: auto;
 }
 
 /* EL MENÚ DESPLEGABLE PERSONALITZAT */
@@ -576,6 +580,7 @@ body.dark-mode .finestra {
     opacity: 0;
     visibility: hidden;
     display: block !important; /* Canviem display none per opacity */
+    cursor: pointer !important;
 }
 
 .lang-menu.show {
@@ -919,35 +924,39 @@ iframe.goog-te-banner-frame,
 
 <script>
 
-// 1. OBRE I TANCA EL MENÚ (La que et faltava o calia polir)
+// 1. OBRE I TANCA EL MENÚ (Optimitzat per a iOS)
 function toggleLangMenu(e) {
-    e.stopPropagation(); 
+    if (e) {
+        e.stopPropagation();
+        e.preventDefault(); // Evita comportaments estranys a Safari
+    }
     const menu = document.getElementById('custom-lang-menu');
     menu.classList.toggle('show');
 }
 
-// 2. CANVIA L'IDIOMA I TANCA EL MENÚ (Versió corregida)
+// 2. CANVIA L'IDIOMA (Amb "Retry" per a Safari)
 function changeLanguage(langCode) {
-    // 1. Tancament visual immediat (forçat)
+    // Tancament immediat per UX
     const menu = document.getElementById('custom-lang-menu');
-    if (menu) {
-        menu.classList.remove('show');
-        console.log("Menu tancat visualment"); // Per comprovar-ho a la consola
-    }
+    if (menu) menu.classList.remove('show');
 
-    // 2. Petita pausa per deixar que el DOM respiri abans de cridar a Google
-    setTimeout(() => {
+    // Intentem trobar el selector de Google
+    const intentarTraduccio = () => {
         const select = document.querySelector('#google_translate_element select');
         if (select) {
             select.value = langCode;
             select.dispatchEvent(new Event('change'));
+        } else {
+            // Si Safari encara no ha carregat el selector, ho tornem a provar en 200ms
+            setTimeout(intentarTraduccio, 200);
         }
-    }, 100); 
+    };
+
+    intentarTraduccio();
 }
 
-    // 3. TANCA EL MENÚ SI CLIQUES FORA (A la resta de la web)
-window.onclick = function(event) {
-    // Si el clic no és el botó ni el menú, tanquem
+// 3. TANCA EL MENÚ SI CLIQUES FORA (Afegim touchstart per a iPhone)
+const handleOutsideClick = (event) => {
     if (!event.target.closest('.translate-wrapper')) {
         const menu = document.getElementById('custom-lang-menu');
         if (menu && menu.classList.contains('show')) {
@@ -955,6 +964,9 @@ window.onclick = function(event) {
         }
     }
 };
+
+window.addEventListener('click', handleOutsideClick);
+window.addEventListener('touchstart', handleOutsideClick, { passive: true });
 
 // 3. Inicialitza el motor silenciós de Google
 function googleTranslateElementInit() {
