@@ -628,18 +628,23 @@ body {
     display: none !important;
 }
 
-/* Amaga qualsevol bafarada o tooltip que Google intenti injectar */
-#goog-gt-tt, 
+/* 1. Amagar el giny flotant i qualsevol residu de Google */
+iframe.goog-te-banner-frame, 
 .goog-te-balloon-frame, 
-#goog-gt-thumb {
+#goog-gt-tt, 
+.goog-te-gadget-simple,
+.goog-te-menu-value,
+.skiptranslate:not(.translate-wrapper) {
     display: none !important;
     visibility: hidden !important;
 }
+}
 
-/* Evita que el text original aparegui en fer hover (molt comú en Firefox) */
+/* 3. Matar el "pop-up" que surt quan passes el ratolí per sobre del text */
 .goog-text-highlight {
     background: none !important;
     box-shadow: none !important;
+    box-sizing: border-box !important;
 }
 
 
@@ -956,27 +961,34 @@ function googleTranslateElementInit() {
     new google.translate.TranslateElement({
         pageLanguage: 'ca',
         includedLanguages: 'ca,es,en,fr,de',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // Aquesta línia és clau
         autoDisplay: false
     }, 'google_translate_element');
 }
 
 // 4. "Guardià" per evitar que Google posi la seva barra superior (banner)
 setInterval(() => {
-    // Força la posició a dalt (per si Google mou el body)
-    document.body.style.top = "0px";
-    
-    // Busca elements de Google que s'hagin colat
-    const gBanner = document.querySelector('.goog-te-banner-frame');
-    const gWidget = document.querySelector('.skiptranslate');
-    
-    if (gBanner) gBanner.style.display = 'none';
-    
-    // Si la "rodona" apareix dins d'un div skiptranslate que no sigui el nostre
-    if (gWidget && !gWidget.innerHTML.includes('A文')) {
-        gWidget.style.visibility = 'hidden';
+    // Forcem la posició del body per si Google la intenta canviar
+    if (document.body.style.top !== "0px") {
+        document.body.style.top = "0px";
     }
-}, 500);
 
+    // Busquem i eliminem la "rodeta" i el banner superior
+    const elementsParaBorrar = [
+        '.goog-te-banner-frame',
+        '#goog-gt-tt',
+        '.goog-te-balloon-frame',
+        '.skiptranslate:not(.translate-wrapper)' // Amaga tot el de Google excepte el TEU botó
+    ];
+
+    elementsParaBorrar.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (el) {
+            el.style.display = 'none';
+            el.style.visibility = 'hidden';
+        }
+    });
+}, 300); // Execució cada 300ms per ser més ràpids que Google
 
 
 
