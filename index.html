@@ -64,7 +64,7 @@
         }
 
         .navbar.hidden {
-            top: -130px; /* Amaga tota la barra (logo + trens) */
+            top: -140px; /* Amaga tota la barra (logo + trens) */
         }
 
 .navbar-content {
@@ -829,13 +829,31 @@ body {
 
         // NAVBAR SCROLL EFFECT
         let lastScrollTop = 0;
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            let st = window.pageYOffset || document.documentElement.scrollTop;
-            if (st > lastScrollTop && st > 100) navbar.classList.add('hidden');
-            else navbar.classList.remove('hidden');
-            lastScrollTop = st <= 0 ? 0 : st;
-        });
+        const navbar = document.querySelector('.navbar');
+        const threshold = 10; // Píxels de marge per evitar salts bojos
+
+    window.addEventListener('scroll', () => {
+    let st = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // 1. Evitem valors negatius (com passa a iOS amb el rebot)
+    if (st < 0) st = 0;
+
+    // 2. Només actuem si el moviment és més gran que el llindar
+    if (Math.abs(lastScrollTop - st) <= threshold) return;
+
+    if (st > lastScrollTop && st > 100) {
+        // Scroll AVALL: Amaguem
+        navbar.classList.add('hidden');
+        // Tanquem el menú d'idiomes si estava obert al fer scroll
+        document.getElementById('custom-lang-menu').classList.remove('show');
+    } else {
+        // Scroll AMUNT: Mostrem
+        navbar.classList.remove('hidden');
+    }
+
+    lastScrollTop = st;
+}, { passive: true });
+
 
         // ACORDIÓ
         function toggleFaq(element) {
@@ -867,22 +885,35 @@ body {
     </script>
 
 <script>
-// 1. Mostra o amaga el teu menú
+
+// 1. OBRE I TANCA EL MENÚ (La que et faltava o calia polir)
 function toggleLangMenu(e) {
-    e.stopPropagation();
-    document.getElementById('custom-lang-menu').classList.toggle('show');
+    e.stopPropagation(); 
+    const menu = document.getElementById('custom-lang-menu');
+    menu.classList.toggle('show');
 }
 
-// 2. La clau: connecta el teu botó amb el motor de Google
+// 2. CANVIA L'IDIOMA I TANCA EL MENÚ
 function changeLanguage(langCode) {
+    // Tanquem el menú perquè l'usuari ja ha triat
+    document.getElementById('custom-lang-menu').classList.remove('show');
+
     const select = document.querySelector('#google_translate_element select');
     if (select) {
         select.value = langCode;
-        // Disparem l'esdeveniment 'change' perquè Google sàpiga que hem triat idioma
         select.dispatchEvent(new Event('change'));
     }
-    document.getElementById('custom-lang-menu').classList.remove('show');
-}
+
+    // 3. TANCA EL MENÚ SI CLIQUES FORA (A la resta de la web)
+window.onclick = function(event) {
+    // Si el clic no és el botó ni el menú, tanquem
+    if (!event.target.closest('.translate-wrapper')) {
+        const menu = document.getElementById('custom-lang-menu');
+        if (menu && menu.classList.contains('show')) {
+            menu.classList.remove('show');
+        }
+    }
+};
 
 // 3. Inicialitza el motor silenciós de Google
 function googleTranslateElementInit() {
@@ -900,8 +931,6 @@ setInterval(() => {
     if (gBar) gBar.style.display = 'none';
 }, 500);
 
-// Tanca el menú si l'usuari clica fora
-window.onclick = () => document.getElementById('custom-lang-menu').classList.remove('show');
 
 
 
