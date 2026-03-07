@@ -61,6 +61,8 @@
             display: flex;
             flex-direction: column;
             overflow: visible !important;
+            -webkit-transform: translate3d(0,0,0); /* Força l'acceleració per hardware en iOS */
+            will-change: top;
         }
 
         .navbar.hidden {
@@ -830,22 +832,26 @@ body {
         // NAVBAR SCROLL EFFECT
         let lastScrollTop = 0;
         const navbar = document.querySelector('.navbar');
-        const threshold = 10; // Píxels de marge per evitar salts bojos
+        const threshold = 15; // Una mica més alt per a pantalles tàctils
 
-    window.addEventListener('scroll', () => {
-    let st = window.pageYOffset || document.documentElement.scrollTop;
+        window.addEventListener('scroll', () => {
+            let st = window.pageYOffset || document.documentElement.scrollTop;
     
-    // 1. Evitem valors negatius (com passa a iOS amb el rebot)
-    if (st < 0) st = 0;
+    // Bloqueig de seguretat per a iOS (Rebot superior i inferior)
+    if (st <= 0) {
+        navbar.classList.remove('hidden');
+        lastScrollTop = 0;
+        return;
+    }
 
-    // 2. Només actuem si el moviment és més gran que el llindar
+    // Ignorem micro-moviments
     if (Math.abs(lastScrollTop - st) <= threshold) return;
 
     if (st > lastScrollTop && st > 100) {
-        // Scroll AVALL: Amaguem
+        // Scroll AVALL: Amaguem (molt clar)
         navbar.classList.add('hidden');
-        // Tanquem el menú d'idiomes si estava obert al fer scroll
-        document.getElementById('custom-lang-menu').classList.remove('show');
+        const langMenu = document.getElementById('custom-lang-menu');
+        if (langMenu) langMenu.classList.remove('show');
     } else {
         // Scroll AMUNT: Mostrem
         navbar.classList.remove('hidden');
@@ -903,6 +909,7 @@ function changeLanguage(langCode) {
         select.value = langCode;
         select.dispatchEvent(new Event('change'));
     }
+}
 
     // 3. TANCA EL MENÚ SI CLIQUES FORA (A la resta de la web)
 window.onclick = function(event) {
