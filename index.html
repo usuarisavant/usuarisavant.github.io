@@ -590,15 +590,26 @@ body.dark-mode .finestra {
 }
 
 /* AMAGAR GOOGLE SENSE BLOQUEJAR SCRIPTS */
-/* Amaguem el widget original de Google però el deixem "viu" pel sistema */
+
 #google_translate_element {
-    display: block !important;
-    position: absolute !important;
-    top: -9999px !important;
-    left: -9999px !important;
-    width: 1px !important;
-    height: 1px !important;
+    height: 0 !important;
+    width: 0 !important;
     overflow: hidden !important;
+    position: absolute !important;
+    visibility: hidden !important;
+}
+
+/* 3. Neteja de l'espai superior que Google intenta "robar" al body */
+body {
+    top: 0 !important;
+    position: static !important;
+}
+
+/* 4. Amagar l'iframe que conté el globus (molt comú en mòbils) */
+iframe.goog-te-banner-frame, 
+iframe.goog-te-menu-frame, 
+.goog-te-menu-value span {
+    display: none !important;
 }
 
 .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame, .goog-te-gadget-icon {
@@ -609,6 +620,15 @@ body.dark-mode .finestra {
     display: none !important;
 }
 
+/* 1. Atac directe al globus flotant de mòbil */
+.goog-te-gadget-icon, 
+.goog-te-gadget-simple img, 
+#google_translate_element img, 
+.goog-te-balloon-frame,
+#goog-gt-tt, 
+.goog-te-spinner-pos {
+    display: none !important;
+}
 
 /* 4. Assegurem que la zona de trens no es mogui */
 .navbar {
@@ -905,31 +925,37 @@ document.addEventListener('click', () => langMenu.classList.remove('show'));
 function changeLanguage(langCode) {
     console.log("Sol·licitant canvi a: " + langCode);
 
-    // 1. Intentem trobar el selector de Google immediatament
+    // 1. SI ÉS CATALÀ (IDIOMA ORIGINAL) -> NETEJA TOTAL I RECARREGA
+    if (langCode === 'ca') {
+        // Esborrem la cookie de Google Translate perquè no recordi la traducció
+        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + location.hostname + "; path=/;";
+        
+        // Recarreguem la pàgina per netejar el DOM de Google
+        location.reload();
+        return; 
+    }
+
+    // 2. SI ÉS UN ALTRE IDIOMA -> FEM EL CANVI RÀPID (SENSE RECARREGAR)
     const selectEl = document.querySelector('.goog-te-combo');
 
     if (selectEl) {
-        // Si ja existeix, canviem l'idioma directament
-        selectEl.value = (langCode === 'ca') ? '' : langCode;
+        selectEl.value = langCode;
         selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        console.log("✅ Traducció ràpida a: " + langCode);
     } else {
-        // 2. Si NO existeix (Google encara carrega), creem un "Observador"
+        // Si Google encara no ha carregat el selector, fem servir l'Observer
         console.warn("Esperant que Google estigui llest...");
-        
         const observer = new MutationObserver((mutations, obs) => {
             const retrySelect = document.querySelector('.goog-te-combo');
             if (retrySelect) {
-                retrySelect.value = (langCode === 'ca') ? '' : langCode;
+                retrySelect.value = langCode;
                 retrySelect.dispatchEvent(new Event('change', { bubbles: true }));
-                obs.disconnect(); // Deixem d'observar un cop fet el canvi
-                console.log("✅ Traducció aplicada després d'esperar.");
+                obs.disconnect();
             }
         });
-
-        // Vigilem tot el document per si apareix el menú de Google
         observer.observe(document.body, { childList: true, subtree: true });
         
-        // Per si de cas l'observador falla, intentem despertar Google
         if (typeof googleTranslateElementInit === 'function') googleTranslateElementInit();
     }
 }
@@ -945,11 +971,25 @@ function googleTranslateElementInit() {
 }
 
 // --- 4. NETEJA DE BANNERS ---
+// Neteja agressiva de qualsevol rastre visual de Google Translate
 setInterval(() => {
+    // Busca el banner superior
     const googleFrame = document.querySelector('.goog-te-banner-frame');
-    if (googleFrame) googleFrame.style.display = 'none';
-    document.body.style.top = '0px';
-}, 1000);
+    if (googleFrame) googleFrame.remove();
+
+    // Busca el globus flotant de mòbil (sol ser un div amb aquesta classe)
+    const mobileFloat = document.querySelector('.goog-te-gadget-simple');
+    if (mobileFloat) mobileFloat.style.display = 'none';
+
+    // Elimina el "tooltip" que surt quan passes el dit per sobre d'un text traduït
+    const tooltip = document.querySelector('.goog-te-balloon-frame');
+    if (tooltip) tooltip.remove();
+
+    // Força el body a estar a dalt de tot
+    if (document.body.style.top !== '0px') {
+        document.body.style.top = '0px';
+    }
+}, 500); // Passem a 500ms per ser més ràpids en mòbils
 
 </script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
