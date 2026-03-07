@@ -572,9 +572,16 @@ body.dark-mode .finestra {
     z-index: 10000;
     min-width: 160px;
     overflow: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s;
+    opacity: 0;
+    visibility: hidden;
+    display: block !important; /* Canviem display none per opacity */
 }
 
-.lang-menu.show { display: block; }
+.lang-menu.show {
+    opacity: 1;
+    visibility: visible;
+}
 
 .lang-menu button {
     width: 100%;
@@ -670,11 +677,11 @@ body {
       <div class="translate-wrapper notranslate" onclick="toggleLangMenu(event)">
     <span>A文</span>
     <div id="custom-lang-menu" class="lang-menu">
-        <button onclick="changeLanguage('ca')">Català</button>
-        <button onclick="changeLanguage('es')">Castellano</button>
-        <button onclick="changeLanguage('en')">English</button>
-        <button onclick="changeLanguage('fr')">Français</button>
-        <button onclick="changeLanguage('de')">Deutsch</button>
+        <button onclick="event.stopPropagation(); changeLanguage('ca')">Català</button>
+        <button onclick="event.stopPropagation(); changeLanguage('es')">Castellano</button>
+        <button onclick="event.stopPropagation(); changeLanguage('en')">English</button>
+        <button onclick="event.stopPropagation(); changeLanguage('fr')">Français</button>
+        <button onclick="event.stopPropagation(); changeLanguage('de')">Deutsch</button>
     </div>
 </div>
 <button id="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
@@ -899,16 +906,23 @@ function toggleLangMenu(e) {
     menu.classList.toggle('show');
 }
 
-// 2. CANVIA L'IDIOMA I TANCA EL MENÚ
+// 2. CANVIA L'IDIOMA I TANCA EL MENÚ (Versió corregida)
 function changeLanguage(langCode) {
-    // Tanquem el menú perquè l'usuari ja ha triat
-    document.getElementById('custom-lang-menu').classList.remove('show');
-
-    const select = document.querySelector('#google_translate_element select');
-    if (select) {
-        select.value = langCode;
-        select.dispatchEvent(new Event('change'));
+    // 1. Tancament visual immediat (forçat)
+    const menu = document.getElementById('custom-lang-menu');
+    if (menu) {
+        menu.classList.remove('show');
+        console.log("Menu tancat visualment"); // Per comprovar-ho a la consola
     }
+
+    // 2. Petita pausa per deixar que el DOM respiri abans de cridar a Google
+    setTimeout(() => {
+        const select = document.querySelector('#google_translate_element select');
+        if (select) {
+            select.value = langCode;
+            select.dispatchEvent(new Event('change'));
+        }
+    }, 100); 
 }
 
     // 3. TANCA EL MENÚ SI CLIQUES FORA (A la resta de la web)
