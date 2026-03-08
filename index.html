@@ -668,6 +668,68 @@ iframe.goog-te-menu-frame,
     -webkit-mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
 }
 
+
+
+.faq-tool { width: 100%; margin: 10px 0; font-family: sans-serif; }
+.header { background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 15px; }
+.select-row { display: flex; gap: 5px; margin-bottom: 10px; }
+.select-row select { flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+.btn-reset { width: 100%; padding: 8px; background: #fff5f5; color: #c0392b; border: 1px solid #f8d7da; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.7rem; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px; }
+.leg-item { display: flex; align-items: center; gap: 5px; }
+.box { width: 12px; height: 12px; border-radius: 3px; }
+.month { background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 10px; margin-bottom: 15px; }
+.month-title { text-align: center; font-weight: bold; margin-bottom: 8px; text-transform: capitalize; color: #1e293b; }
+.days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.day-name { text-align: center; font-size: 0.6rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; }
+.day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.9rem; border: 1px solid #f1f5f9; cursor: pointer; position: relative; }
+.day.state-0 { background: #fff; }
+.day.state-1 { background: #ff9800 !important; color: #fff; font-weight: bold; }
+.day.state-2 { background: #2196f3 !important; color: #fff; font-weight: bold; }
+.day.holiday:not(.state-1):not(.state-2) { background: #e74c3c !important; color: #fff; font-weight: bold; }
+.day[data-label]::before { content: attr(data-label); position: absolute; top: 1px; right: 2px; font-size: 0.5rem; }
+.summary-bar { position: sticky; bottom: 5px; background: #1e293b; color: #fff; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+.total-val { background: #38bdf8; color: #000; padding: 2px 10px; border-radius: 6px; font-weight: 900; font-size: 1.2rem; }
+
+/* Limitem l'alçada de la llista de mesos per forçar l'scroll intern */
+.calendar-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    max-height: 400px; /* Alçada ajustable segons vulguis */
+    overflow-y: auto;  /* Activa l'scroll vertical */
+    padding-right: 5px; /* Espai per a la barra de desplaçament */
+    margin-bottom: 10px;
+}
+
+/* Millorem l'aspecte de la barra d'scroll per a mòbils */
+.calendar-list::-webkit-scrollbar {
+    width: 6px;
+}
+.calendar-list::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}
+
+/* Assegurem que el contenidor de la resposta no talli el contingut */
+.faq-resposta {
+    overflow: visible !important;
+}
+
+/* La barra de total ja no cal que sigui 'sticky' si l'scroll és intern, 
+   la deixem fixa a sota de la llista per claredat */
+.summary-bar { 
+    background: #1e293b; 
+    color: #fff; 
+    padding: 12px; 
+    border-radius: 10px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+
     </style>
 </head>
 <body>
@@ -785,9 +847,41 @@ iframe.goog-te-menu-frame,
 
 
           <div class="faq-item">
-        <button class="faq-pregunta" onclick="toggleFaq(this)"> La teva pregunta aquí <span>+</span></button>
+        <button class="faq-pregunta" onclick="toggleFaq(this)"> Quants bitllets faré servir aquest T? <span>+</span></button>
         <div class="faq-resposta">
-            <p> La teva resposta aquí </p>
+         <p>Utilitza el nostre calendari interactiu per calcular quants bitllets necessitaràs aquest trimestre. Prem un cop per anada i tornada (blau) i dos cops per un sol trajecte (taronja).</p>
+
+<div class="faq-tool">
+    <div class="header">
+        <div class="select-row">
+            <select id="yearSelect" onchange="initCalendar()">
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+            </select>
+            <select id="trimestreSelect" onchange="initCalendar()">
+                <option value="1">1r Trimestre</option>
+                <option value="2">2n Trimestre</option>
+                <option value="3">3r Trimestre</option>
+                <option value="4">4t Trimestre</option>
+            </select>
+        </div>
+        <button type="button" class="btn-reset" onclick="resetAll()">Netejar selecció</button>
+    </div>
+
+    <div class="legend">
+        <div class="leg-item"><div class="box" style="background: #e74c3c"></div> Festiu</div>
+        <div class="leg-item"><div class="box" style="background: #2196f3"></div> Anada/Tor</div>
+        <div class="leg-item"><div class="box" style="background: #ff9800"></div> 1 Trajecte</div>
+        <div class="leg-item"><div class="box" style="background: #fff"></div> Laborable</div>
+    </div>
+
+    <div class="calendar-list" id="calendars"></div>
+
+    <div class="summary-bar">
+        <span>TOTAL BITLLETS:</span>
+        <span id="total-count" class="total-val">0</span>
+    </div>
+</div>
         </div>
         </div>
 
@@ -1059,7 +1153,78 @@ setInterval(() => {
 
 <script src="acces.js"></script>
 
+<script>
+    const festius = {
+        "2026-0-1": "Cap d'Any", "2026-0-6": "Reis", "2026-3-3": "Div. Sant", 
+        "2026-3-6": "Pasqua", "2026-4-1": "Treball", "2026-5-24": "St Joan",
+        "2026-7-15": "Assumpció", "2026-8-11": "Diada", "2026-9-12": "Pilar", 
+        "2026-10-1": "Tots Sants", "2026-11-6": "Constitució", 
+        "2026-11-8": "Immaculada", "2026-11-25": "Nadal", "2026-11-26": "St Esteve"
+    };
 
+    function setInitialDate() {
+        const today = new Date();
+        let y = today.getFullYear();
+        let m = today.getMonth();
+        let q = Math.floor(m / 3) + 1;
+        if ((m % 3 === 2) || (m % 3 === 1 && today.getDate() > 15)) {
+            q++; if (q > 4) { q = 1; y++; }
+        }
+        document.getElementById('yearSelect').value = y;
+        document.getElementById('trimestreSelect').value = q;
+    }
+
+    function initCalendar() {
+        const cont = document.getElementById('calendars');
+        if(!cont) return;
+        cont.innerHTML = '';
+        const y = parseInt(document.getElementById('yearSelect').value);
+        const t = parseInt(document.getElementById('trimestreSelect').value);
+        const startM = (t - 1) * 3;
+
+        for (let i = 0; i < 3; i++) {
+            const currentM = startM + i;
+            const firstDay = new Date(y, currentM, 1);
+            const daysInM = new Date(y, currentM + 1, 0).getDate();
+            let startPos = (firstDay.getDay() === 0) ? 6 : firstDay.getDay() - 1;
+
+            let html = `<div class="month"><div class="month-title">${firstDay.toLocaleString('ca-ES', {month:'long'})}</div><div class="days-grid">`;
+            ['dl','dt','dc','dj','dv','ds','dg'].forEach(d => html += `<div class="day-name">${d}</div>`);
+            for (let j = 0; j < startPos; j++) html += `<div class="day empty"></div>`;
+            for (let d = 1; d <= daysInM; d++) {
+                const isH = festius[`${y}-${currentM}-${d}`] ? 'holiday' : '';
+                html += `<div class="day state-0 ${isH}" data-state="0" onclick="toggleDay(this)">${d}</div>`;
+            }
+            cont.innerHTML += html + `</div></div>`;
+        }
+        updateSummary();
+    }
+
+    function toggleDay(el) {
+        let s = parseInt(el.getAttribute('data-state'));
+        let n = (s === 0) ? 2 : (s === 2 ? 1 : 0);
+        el.setAttribute('data-state', n);
+        el.setAttribute('data-label', n === 2 ? 'x2' : (n === 1 ? 'x1' : ''));
+        el.className = `day state-${n} ${el.classList.contains('holiday') ? 'holiday' : ''}`;
+        updateSummary();
+    }
+
+    function updateSummary() {
+        let t = 0;
+        document.querySelectorAll('.day[data-state]').forEach(d => t += parseInt(d.getAttribute('data-state')));
+        document.getElementById('total-count').innerText = t;
+    }
+
+    function resetAll() {
+        document.querySelectorAll('.day[data-state]').forEach(el => {
+            el.setAttribute('data-state', 0);
+            el.className = `day state-0 ${el.classList.contains('holiday') ? 'holiday' : ''}`;
+        });
+        updateSummary();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { setInitialDate(); initCalendar(); });
+</script>
 
 </body>
 </html>
