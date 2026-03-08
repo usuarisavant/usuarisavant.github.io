@@ -958,6 +958,32 @@ iframe.goog-te-menu-frame,
     <div id="faq-container">
         
         <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+        Estan patint retards els trens d'alta velocitat? <span>+</span>
+    </button>
+    <div class="faq-resposta">
+        <div>
+            <p>No és una sensació teva, és una realitat. Pots consultar els retards reportats pels usuaris, i filtrar-los per trajecte, prement el següent botó:</p>
+            
+            <button onclick="obrirRetards()" style="
+                background-color: var(--accent); 
+                color: white; 
+                border: none; 
+                padding: 10px 20px; 
+                border-radius: 8px; 
+                cursor: pointer; 
+                margin-top: 10px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 8px;">
+                <span>⚠️</span> Consulta retards
+            </button>
+        </div>
+    </div>
+</div>
+
+        <div class="faq-item">
         <button class="faq-pregunta" onclick="toggleFaq(this)"> La teva pregunta aquí <span>+</span></button>
         <div class="faq-resposta">
             <div><p> La teva resposta aquí </p>
@@ -1427,6 +1453,25 @@ window.addEventListener('click', function(event) {
         tancarCalculadora();
     }
 });
+
+function obrirRetards() {
+            document.getElementById("modal-retards").style.display = "block";
+        }
+
+        function tancarModalRetards() {
+            document.getElementById("modal-retards").style.display = "none";
+        }
+
+        // Aquesta part és opcional però molt útil: tanca la modal si l'usuari clica fora de la caixa
+        window.onclick = function(event) {
+            let modalR = document.getElementById("modal-retards");
+            if (event.target == modalR) {
+                modalR.style.display = "none";
+            }
+        }
+
+
+
 </script>
 
 
@@ -1439,6 +1484,28 @@ window.addEventListener('click', function(event) {
         </div>
         <div class="modal-body">
             <iframe id="calc-iframe" src=""></iframe>
+        </div>
+    </div>
+</div>
+
+<div id="modal-retards" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
+    <div class="modal-content" style="margin: 5% auto; width: 90%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column;">
+        
+        <div class="modal-header" style="padding: 15px; border-bottom: 1px solid var(--border);">
+            <h3 style="margin:0;">⚠️ Estat de l'Alta Velocitat</h3>
+            <button class="close-modal" onclick="tancarModalRetards()">&times;</button>
+        </div>
+
+        <div class="modal-body" style="padding:10px; overflow-x: auto; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+            
+            <p style="font-size: 0.8em; color: var(--text-muted); margin-bottom: 10px;">
+                💡 Consell: Si no veus totes les columnes, llisca la taula cap a la dreta.
+            </p>
+
+            <iframe src="https://script.google.com/macros/s/AKfycbz3Ozd2Q7KnmE3aTxzi1nIOYLM7fCZ0-7jttbkyuknkurgVpYSSrVTqKhBxTW4nQy4s/exec" 
+                    style="width: 100%; min-width: 800px; height: 500px; border: 1px solid #ddd; border-radius: 8px;">
+            </iframe>
+
         </div>
     </div>
 </div>
