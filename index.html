@@ -486,7 +486,7 @@ body.dark-mode .finestra {
             padding: 5px 12px; cursor: pointer; color: var(--text); font-size: 1.1rem;
         }
 
-        .header-spacer { height: 100px; }
+        .header-spacer { height: 130px; }
 
         h1 { text-align: center; margin-bottom: 30px; }
 
@@ -515,13 +515,13 @@ body.dark-mode .finestra {
 
         .faq-resposta {
     display: grid;
-    grid-template-rows: 0fr; /* Comença a zero */
+    grid-template-rows: 0fr;
     transition: grid-template-rows 0.4s ease-out;
     background: var(--card-bg);
     color: var(--text-muted);
-    overflow: hidden; /* Evita que es vegi el text quan està tancat */
-    visibility: hidden; /* Amagat per defecte */
-    }
+    overflow: hidden; /* OBLIGATORI perquè l'acordió funcioni */
+    visibility: hidden;
+}
 
         /* Quan està actiu, el contingut interior determina l'alçada */
     .faq-item.active .faq-resposta {
@@ -810,13 +810,10 @@ iframe.goog-te-menu-frame,
         </div>
    
 
-    <div class="navbar-train-container"><div class="nav-train-zone">
+    <div class="navbar-train-container">
+        <div class="nav-train-zone">
         <div class="via-anada"></div>
         <div class="via-tornada"></div>
-
-     <div class="nav-train-zone">
-    <div class="via-anada"></div>
-    <div class="via-tornada"></div>
 
  
 <div class="unitat-tren tornada">
@@ -874,9 +871,6 @@ iframe.goog-te-menu-frame,
        
 </div>
 
-    
-  </div>
-    </div>
 </header>
 
     <div class="header-spacer"></div>
