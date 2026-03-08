@@ -514,14 +514,31 @@ body.dark-mode .finestra {
         .faq-pregunta:hover { background: rgba(0,0,0,0.02); }
 
         .faq-resposta {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.4s ease-out;
-            background: var(--card-bg); color: var(--text-muted);
-        }
+    display: grid;
+    grid-template-rows: 0fr; /* Comença a zero */
+    transition: grid-template-rows 0.4s ease-out;
+    background: var(--card-bg);
+    color: var(--text-muted);
+    overflow: hidden; /* Evita que es vegi el text quan està tancat */
+    }
 
-        .faq-item.active .faq-resposta {
-            max-height: 1000px; border-top: 1px solid var(--border); padding: 20px;
-        }
+        /* Quan està actiu, el contingut interior determina l'alçada */
+    .faq-item.active .faq-resposta {
+    grid-template-rows: 1fr;
+    border-top: 1px solid var(--border);
+    }
+
+
+    /* Contenidor intern necessari per al truc del Grid */
+    .faq-resposta > div {
+    min-height: 0;
+    padding: 0 20px; /* El padding va aquí dins, no al pare */
+    transition: padding 0.4s;
+    }
+
+    .faq-item.active .faq-resposta > div {
+    padding: 20px;
+    }
 
         /* 6. MINI-CARRUSSEL */
         .mini-carousel { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
