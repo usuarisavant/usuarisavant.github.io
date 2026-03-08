@@ -722,10 +722,17 @@ iframe.goog-te-menu-frame,
 .total-val { background: #38bdf8; color: #000; padding: 2px 10px; border-radius: 6px; font-weight: 900; font-size: 1.2rem; }
 
 /* Limitem l'alçada de la llista de mesos per forçar l'scroll intern */
-.calendar-list {
-    padding-left: 2px;
-    padding-right: 2px;
-    overflow-x: hidden; /* Prohibeix l'scroll horitzontal residual */
+.calendar-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    max-height: 380px; /* Una mica més curta per deixar aire al final */
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch; /* Força l'scroll fluid en iOS */
+    padding-right: 5px; 
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
 }
 
 /* Millorem l'aspecte de la barra d'scroll per a mòbils */
@@ -875,9 +882,10 @@ iframe.goog-te-menu-frame,
           <div class="faq-item">
         <button class="faq-pregunta" onclick="toggleFaq(this)"> Quants bitllets faré servir aquest T? <span>+</span></button>
         <div class="faq-resposta">
+            <div>
          <p>Utilitza el nostre calendari interactiu per calcular quants bitllets necessitaràs aquest trimestre. Prem un cop per anada i tornada (blau) i dos cops per un sol trajecte (taronja).</p>
-
 <div class="faq-tool">
+</div>
     <div class="header">
         <div class="select-row">
             <select id="yearSelect" onchange="initCalendar()">
