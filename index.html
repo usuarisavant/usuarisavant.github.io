@@ -1488,23 +1488,28 @@ function obrirRetards() {
     </div>
 </div>
 
-<div id="modal-retards" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; overflow:auto;">
+<div id="modal-retards" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; overflow:auto; -webkit-overflow-scrolling:touch;">
     
     <button onclick="tancarModalRetards()" style="position:fixed; top:15px; right:15px; z-index:10001; background:var(--avant-orange); color:white; border:none; border-radius:50%; width:45px; height:45px; font-size:25px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">×</button>
 
-    <div style="width: 100%; min-height: 100%; display: block; overflow: auto; -webkit-overflow-scrolling: touch;">
+    <div style="width: 100%; height: 100%;">
         
         <div id="zoom-wrapper" style="
-            width: 1200px; /* Amplada de "escriptori" perquè la taula no s'estrenyi */
-            transform: scale(0.65); /* Escalado inicial: es veurà al 65% de tamany */
-            transform-origin: 0 0; /* Escala des de la cantonada superior */
+            width: 1000px; /* Mateixa amplada que hem posat al body de Google Scripts */
             background: white;
-            padding: 10px;
+            /* Apliquem compressió per veure-ho tot d'un cop al mòbil */
+            transform: scale(0.4); 
+            transform-origin: 0 0;
+            zoom: 0.4; /* Crucial per a Safari iOS */
+            padding: 0;
+            margin: 0;
         ">
-            <p style="color: #666; font-size: 14px;">💡 Pots fer zoom amb els dits per ampliar la taula.</p>
+            <div style="background: #f8f9fa; padding: 10px; border-bottom: 1px solid #ddd; width: 1000px;">
+                <p style="color: #666; font-size: 24px; margin: 0;">↔️ Llisca lateralment i fes zoom amb els dits</p>
+            </div>
             
             <iframe src="https://script.google.com/macros/s/AKfycbz3Ozd2Q7KnmE3aTxzi1nIOYLM7fCZ0-7jttbkyuknkurgVpYSSrVTqKhBxTW4nQy4s/exec" 
-                    style="width: 100%; height: 1500px; border: none;"></iframe>
+                    style="width: 1000px; height: 1800px; border: none; display: block;"></iframe>
         </div>
     </div>
 </div>
