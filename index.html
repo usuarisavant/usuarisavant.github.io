@@ -853,7 +853,10 @@ iframe.goog-te-menu-frame,
 
 .btn-calcular:hover { opacity: 0.9; transform: translateY(-1px); }
 
-
+/* Fa que el cursor canviï a una mà indicant que és interactiu */
+.vago {
+    cursor: pointer;
+}
 
     </style>
 </head>
@@ -1440,6 +1443,35 @@ window.addEventListener('click', function(event) {
     </div>
 </div>
 
+<audio id="so-base" src="media/horn.mp3"></audio>
+
+<script>
+        const audio = document.getElementById('so-base');
+
+        function tocarClaxon(pitch, volum) {
+            audio.currentTime = 0;          
+            audio.playbackRate = pitch;     
+            audio.volume = volum;           
+            
+            audio.play().catch(error => {
+                console.log("Cal interactuar amb la pàgina primer per escoltar l'àudio.");
+            });
+        }
+
+        // TREN D'ANADA
+        document.querySelectorAll('.anada .vago').forEach(vago => {
+            vago.addEventListener('click', () => {
+                tocarClaxon(1.2, 1.0); 
+            });
+        });
+
+        // TREN DE TORNADA
+        document.querySelectorAll('.tornada .vago').forEach(vago => {
+            vago.addEventListener('click', () => {
+                tocarClaxon(0.8, 0.5); 
+            });
+        });
+    </script>
 
 </body>
 </html>
