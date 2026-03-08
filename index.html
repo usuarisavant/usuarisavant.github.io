@@ -520,12 +520,14 @@ body.dark-mode .finestra {
     background: var(--card-bg);
     color: var(--text-muted);
     overflow: hidden; /* Evita que es vegi el text quan està tancat */
+    visibility: hidden; /* Amagat per defecte */
     }
 
         /* Quan està actiu, el contingut interior determina l'alçada */
     .faq-item.active .faq-resposta {
     grid-template-rows: 1fr;
     border-top: 1px solid var(--border);
+    visibility: visible; /* Visible quan s'obre */
     }
 
 
@@ -891,7 +893,8 @@ iframe.goog-te-menu-frame,
         <div class="faq-item">
         <button class="faq-pregunta" onclick="toggleFaq(this)"> La teva pregunta aquí <span>+</span></button>
         <div class="faq-resposta">
-            <p> La teva resposta aquí </p>
+            <div><p> La teva resposta aquí </p>
+            </div>
         </div>
         </div>
 
@@ -901,8 +904,8 @@ iframe.goog-te-menu-frame,
         <div class="faq-resposta">
             <div>
          <p>Utilitza el nostre calendari interactiu per calcular quants bitllets necessitaràs aquest trimestre. Prem un cop per anada i tornada (blau) i dos cops per un sol trajecte (taronja).</p>
-<div class="faq-tool">
-</div>
+    <div class="faq-tool">
+
     <div class="header">
         <div class="select-row">
             <select id="yearSelect" onchange="initCalendar()">
