@@ -680,26 +680,52 @@ iframe.goog-te-menu-frame,
 .box { width: 12px; height: 12px; border-radius: 3px; }
 .month { background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 10px; margin-bottom: 15px; }
 .month-title { text-align: center; font-weight: bold; margin-bottom: 8px; text-transform: capitalize; color: #1e293b; }
-.days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-.day-name { text-align: center; font-size: 0.6rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; }
-.day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.9rem; border: 1px solid #f1f5f9; cursor: pointer; position: relative; }
+.days-grid { 
+    display: grid; 
+    /* El minmax(0, ...) és la clau perquè no sobresurti a iOS */
+    grid-template-columns: repeat(7, minmax(0, 1fr)); 
+    gap: 3px; /* Reduït de 4px a 3px per guanyar espai lateral */
+}
+.day-name { 
+    text-align: center; 
+    font-size: 0.55rem; /* Una mica més petit per seguretat */
+    color: #94a3b8; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+}
+.day { 
+    aspect-ratio: 1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border-radius: 4px; /* Un pèl més quadrat per aprofitar espai */
+    font-size: 0.8rem;  /* Reduït de 0.9rem a 0.8rem */
+    border: 1px solid #f1f5f9; 
+    cursor: pointer; 
+    position: relative; 
+    box-sizing: border-box; /* Crucial a iOS */
+    overflow: hidden;       /* Evita desbordaments de text */
+}
 .day.state-0 { background: #fff; }
 .day.state-1 { background: #ff9800 !important; color: #fff; font-weight: bold; }
 .day.state-2 { background: #2196f3 !important; color: #fff; font-weight: bold; }
 .day.holiday:not(.state-1):not(.state-2) { background: #e74c3c !important; color: #fff; font-weight: bold; }
-.day[data-label]::before { content: attr(data-label); position: absolute; top: 1px; right: 2px; font-size: 0.5rem; }
+.day[data-label]::before { 
+    content: attr(data-label); 
+    position: absolute; 
+    top: 0px; 
+    right: 1px; 
+    font-size: 0.45rem; /* Molt petit per no trencar el layout */
+    opacity: 0.8;
+}
 .summary-bar { position: sticky; bottom: 5px; background: #1e293b; color: #fff; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
 .total-val { background: #38bdf8; color: #000; padding: 2px 10px; border-radius: 6px; font-weight: 900; font-size: 1.2rem; }
 
 /* Limitem l'alçada de la llista de mesos per forçar l'scroll intern */
-.calendar-list { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 15px; 
-    max-height: 400px; /* Alçada ajustable segons vulguis */
-    overflow-y: auto;  /* Activa l'scroll vertical */
-    padding-right: 5px; /* Espai per a la barra de desplaçament */
-    margin-bottom: 10px;
+.calendar-list {
+    padding-left: 2px;
+    padding-right: 2px;
+    overflow-x: hidden; /* Prohibeix l'scroll horitzontal residual */
 }
 
 /* Millorem l'aspecte de la barra d'scroll per a mòbils */
