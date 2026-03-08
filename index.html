@@ -1396,7 +1396,7 @@ function obrirCalculadora() {
     
     // Aquesta és la teva URL de l'App Script
     const baseUrl = "https://script.google.com/macros/s/AKfycbyNYfAjMtMsbCCo4T2fJNKoj8p5XY2VR2LRmpPvtP-rEv_LxdymuKv9L5cfUjKICMvo/exec";
-    
+    console.log("URL que estic enviant a la modal:", urlFinal); // <-- Mira això a la consola (F12)
     // Li afegim el paràmetre dels viatges al final de la URL
     const finalUrl = baseUrl + "?viatges=" + viatges;
     
