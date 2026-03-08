@@ -858,6 +858,45 @@ iframe.goog-te-menu-frame,
     cursor: pointer;
 }
 
+/* Estil base per a ordinadors (Pantalla Gran) */
+.modal-body-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centra la taula a l'ordinador */
+    background: #f0f0f0;
+    padding: 20px 0;
+}
+
+.iframe-retards {
+    width: 90%; /* Ocupa quasi tota la pantalla en PC */
+    max-width: 1000px;
+    height: 80vh;
+    border: none;
+    background: white;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    border-radius: 8px;
+}
+
+/* --- AJUSTS PER A MÒBILS (Pantalles de menys de 768px) --- */
+@media (max-width: 768px) {
+    .modal-body-wrapper {
+        display: block; /* Permet l'scroll lliure */
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .iframe-retards {
+        width: 1000px; /* Forçem amplada gran per evitar que s'aafiï */
+        height: 1500px;
+        transform: scale(0.6); /* Una compressió suau (60%) */
+        transform-origin: 0 0;
+        zoom: 0.6;
+        margin: 0;
+        border-radius: 0;
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -1488,22 +1527,16 @@ function obrirRetards() {
     </div>
 </div>
 
-<div id="modal-retards" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; overflow:hidden;">
+<div id="modal-retards" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; overflow-y: auto;">
     
-    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: white; border-bottom: 1px solid #ddd; height: 60px; position: relative; z-index: 10002;">
-        <span style="font-size: 0.9em; color: #333; font-weight: bold;">↔️ Llisca la taula i fes zoom</span>
-        <button onclick="tancarModalRetards()" style="background:var(--avant-orange); color:white; border:none; border-radius:50%; width:40px; height:40px; font-size:25px; cursor:pointer;">&times;</button>
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: white; border-bottom: 1px solid #ddd; height: 50px; position: sticky; top: 0; z-index: 10002;">
+        <span style="font-size: 0.85em; color: #555;">↔️ Llisca i fes zoom per veure detalls</span>
+        <button onclick="tancarModalRetards()" style="background:var(--avant-orange); color:white; border:none; border-radius:50%; width:35px; height:35px; font-size:20px; cursor:pointer;">&times;</button>
     </div>
 
-    <div style="
-        width: 100%; 
-        height: calc(100% - 60px); 
-        overflow: auto; 
-        -webkit-overflow-scrolling: touch; 
-        background: #fff;
-    ">
+    <div class="modal-body-wrapper">
         <iframe src="https://script.google.com/macros/s/AKfycbz3Ozd2Q7KnmE3aTxzi1nIOYLM7fCZ0-7jttbkyuknkurgVpYSSrVTqKhBxTW4nQy4s/exec" 
-                style="width: 1000px; height: 2000px; border: none; display: block;">
+                class="iframe-retards">
         </iframe>
     </div>
 </div>
