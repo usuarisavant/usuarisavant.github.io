@@ -782,6 +782,79 @@ iframe.goog-te-menu-frame,
 }
 
 
+/* =========================================
+   7. FINESTRA MODAL CALCULADORA
+   ========================================= */
+.modal-overlay {
+    display: none; /* Amagat per defecte */
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(3px); /* Efecte borrós de fons */
+}
+
+.modal-content {
+    background: var(--card-bg);
+    width: 95%; max-width: 600px; height: 85vh; /* Ocupa bona part de la pantalla */
+    border-radius: 12px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px;
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 { margin: 0; color: var(--text); font-size: 1.2rem; }
+
+.close-modal {
+    background: none; border: none; font-size: 1.8rem;
+    cursor: pointer; color: var(--text-muted);
+    line-height: 1; padding: 0 5px; transition: color 0.2s;
+}
+
+.close-modal:hover { color: #e74c3c; }
+
+.modal-body {
+    flex-grow: 1; width: 100%;
+}
+
+.modal-body iframe {
+    width: 100%; height: 100%; border: none;
+}
+
+/* Estils per a la nova FAQ de cost */
+.calc-input-group {
+    display: flex; gap: 10px; margin: 15px 0; align-items: center;
+    background: var(--bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+}
+
+.calc-input-group label { font-weight: bold; color: var(--text); }
+
+.calc-input-group input {
+    padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+    width: 80px; text-align: center; font-size: 1.2rem; font-weight: bold;
+    background: var(--card-bg); color: var(--accent);
+}
+
+.btn-calcular {
+    background: var(--accent); color: white; border: none;
+    padding: 12px 20px; border-radius: 8px; cursor: pointer;
+    font-weight: bold; font-size: 1.1rem; width: 100%;
+    transition: background 0.2s, transform 0.1s;
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+}
+
+.btn-calcular:hover { opacity: 0.9; transform: translateY(-1px); }
+
+
+
     </style>
 </head>
 <body>
@@ -930,6 +1003,27 @@ iframe.goog-te-menu-frame,
         </div>
         </div>
     </div>
+
+
+    <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)"> Quin serà el meu cost trimestral? <span>+</span></button>
+    <div class="faq-resposta">
+        <div>
+            <p>Calcula el teu pressupost. Pots aprofitar els viatges que has marcat al calendari superior o introduir el número a mà.</p>
+            
+            <div class="calc-input-group">
+                <label for="input-viatges">Viatges totals:</label>
+                <input type="number" id="input-viatges" value="0" min="0">
+            </div>
+            
+            <button class="btn-calcular" onclick="obrirCalculadora()">🧮 Obrir Calculadora</button>
+        </div>
+    </div>
+</div>
+
+
+
+
 
           <div class="faq-item">
         <button class="faq-pregunta" onclick="toggleFaq(this)"> Em puc afegir un accés directe? <span>+</span></button>
@@ -1275,6 +1369,71 @@ setInterval(() => {
 
     document.addEventListener('DOMContentLoaded', () => { setInitialDate(); initCalendar(); });
 </script>
+
+
+<script>
+// 1. SINCRONITZACIÓ AUTOMÀTICA (El truc màgic)
+// Això "vigila" el número del calendari i l'escriu automàticament a l'input de la calculadora
+document.addEventListener("DOMContentLoaded", function() {
+    const totalCountNode = document.getElementById('total-count');
+    const inputViatges = document.getElementById('input-viatges');
+
+    if(totalCountNode && inputViatges) {
+        // Creem un observador que detecta qualsevol canvi al span del calendari
+        const observer = new MutationObserver(function() {
+            inputViatges.value = totalCountNode.innerText;
+        });
+        observer.observe(totalCountNode, { characterData: true, childList: true, subtree: true });
+    }
+});
+
+// 2. LÒGICA DE LA FINESTRA MODAL
+function obrirCalculadora() {
+    const viatges = document.getElementById('input-viatges').value;
+
+    // PROVA DE CONTROL: En lloc d'obrir la modal, llança un avís
+    alert("Dada detectada per enviar a Google: " + viatges);
+    
+    // Aquesta és la teva URL de l'App Script
+    const baseUrl = "https://script.google.com/macros/s/AKfycbyNYfAjMtMsbCCo4T2fJNKoj8p5XY2VR2LRmpPvtP-rEv_LxdymuKv9L5cfUjKICMvo/exec";
+    
+    // Li afegim el paràmetre dels viatges al final de la URL
+    const finalUrl = baseUrl + "?viatges=" + viatges;
+    
+    // Injectem la URL a l'Iframe i mostrem la modal
+    document.getElementById('calc-iframe').src = finalUrl;
+    document.getElementById('calculadora-modal').style.display = 'flex';
+}
+
+function tancarCalculadora() {
+    document.getElementById('calculadora-modal').style.display = 'none';
+    // Buidem la URL perquè el script de Google no es quedi carregant de fons
+    document.getElementById('calc-iframe').src = ""; 
+}
+
+// Permet tancar la modal fent clic a la zona fosca (fora de la calculadora)
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('calculadora-modal');
+    if (event.target == modal) {
+        tancarCalculadora();
+    }
+});
+</script>
+
+
+
+<div id="calculadora-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Calculadora de Costos</h3>
+            <button class="close-modal" onclick="tancarCalculadora()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <iframe id="calc-iframe" src=""></iframe>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>
