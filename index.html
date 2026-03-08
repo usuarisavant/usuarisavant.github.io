@@ -1391,18 +1391,24 @@ document.addEventListener("DOMContentLoaded", function() {
 function obrirCalculadora() {
     const viatges = document.getElementById('input-viatges').value;
 
-    // PROVA DE CONTROL: En lloc d'obrir la modal, llança un avís
-    alert("Dada detectada per enviar a Google: " + viatges);
-    
     // Aquesta és la teva URL de l'App Script
     const baseUrl = "https://script.google.com/macros/s/AKfycbyNYfAjMtMsbCCo4T2fJNKoj8p5XY2VR2LRmpPvtP-rEv_LxdymuKv9L5cfUjKICMvo/exec";
-    console.log("URL que estic enviant a la modal:", urlFinal); // <-- Mira això a la consola (F12)
-    // Li afegim el paràmetre dels viatges al final de la URL
-    const finalUrl = baseUrl + "?viatges=" + viatges;
     
-    // Injectem la URL a l'Iframe i mostrem la modal
-    document.getElementById('calc-iframe').src = finalUrl;
-    document.getElementById('calculadora-modal').style.display = 'flex';
+    // Creem la URL final correctament
+    const urlCalculada = baseUrl + "?viatges=" + viatges;
+    
+    // Ara sí, imprimim la variable que acabem de crear
+    console.log("URL enviada a l'iframe:", urlCalculada);
+    
+    // Injectem la URL a l'Iframe
+    const iframe = document.getElementById('calc-iframe');
+    if (iframe) {
+        iframe.src = urlCalculada;
+        // Mostrem la modal
+        document.getElementById('calculadora-modal').style.display = 'flex';
+    } else {
+        console.error("No s'ha trobat l'element 'calc-iframe'");
+    }
 }
 
 function tancarCalculadora() {
