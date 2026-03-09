@@ -1,0 +1,7 @@
+  <div class="faq-item">
+  <button class="faq-pregunta" onclick="toggleFaq(this)"> La teva pregunta aquí <span>+</span></button>
+  <div class="faq-resposta">
+      <div><p> La teva resposta aquí </p>
+      </div>
+  </div>
+  </div>
