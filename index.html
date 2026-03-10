@@ -1117,6 +1117,22 @@ iframe.goog-te-menu-frame,
         </div>
         </div>
 
+<div class="faq-item">
+  <button class="faq-pregunta" onclick="toggleFaq(this)">
+    Com de ràpid està circulant el tren? <span>+</span>
+  </button>
+  <div class="faq-resposta">
+    <div>
+      <p>Pots consultar la teva ubicació, velocitat i efectuar amidaments sobre el mapa:</p>
+      
+      <button id="btnObrirMapa" class="btn-mapa-faq">
+        📍 Obrir Mapa Interactiu
+      </button>
+    </div>
+  </div>
+</div>
+
+
         <div class="faq-item">
             <button class="faq-pregunta" onclick="toggleFaq(this)">Normatives dels grups <span>+</span></button>
             <div class="faq-resposta">
@@ -1564,6 +1580,42 @@ function obrirRetards() {
                 modalR.style.display = "none";
             }
         }
+
+
+// Referències específiques per al Mapa
+const modalMapa = document.getElementById("modalMapa");
+const btnMapa = document.getElementById("btnObrirMapa");
+const closeMapa = document.querySelector(".close-mapa");
+const iframeMapa = document.getElementById("iframeMapa");
+const urlMapa = "https://script.google.com/macros/s/AKfycbzgCfBvMKIaQvSEAx1urS1MKBQkSovG4KeWLKt2EsSn_D-Reh2wMjsZbVaprNMvpDOsEg/exec";
+
+// Obrir el mapa i carregar l'URL si està buit
+if (btnMapa) {
+  btnMapa.onclick = function() {
+    modalMapa.style.display = "block";
+    // Només carreguem l'script de Google si l'iframe encara està buit
+    if (iframeMapa.src === "about:blank" || iframeMapa.src === "") {
+      iframeMapa.src = urlMapa;
+    }
+  }
+}
+
+// Tancar el mapa
+if (closeMapa) {
+  closeMapa.onclick = function() {
+    modalMapa.style.display = "none";
+  }
+}
+
+// Tancar en clicar fora (Integrat amb les teves altres modals)
+window.onclick = function(event) {
+  if (event.target == modalMapa) {
+    modalMapa.style.display = "none";
+  }
+  // Aquí pots afegir: if (event.target == modalCalculadora) ...
+}
+}
+
 
 
 
