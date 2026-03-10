@@ -896,6 +896,44 @@ iframe.goog-te-menu-frame,
     }
 }
 
+/* --- ESTILS DEL MAPA --- */
+.btn-mapa-faq {
+    background-color: var(--avant-purple, #5c3b8c);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.btn-mapa-faq:hover {
+    background-color: var(--avant-orange, #f39c12);
+}
+
+.modal-mapa {
+    width: 95%; 
+    max-width: 1000px; 
+    height: 85vh; 
+    padding: 10px;
+    position: relative;
+    background: white;
+    border-radius: 12px;
+}
+
+.close-mapa {
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    z-index: 100;
+}
+
 
     </style>
 </head>
@@ -1087,6 +1125,20 @@ iframe.goog-te-menu-frame,
     </div>
 </div>
 
+
+    <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+        Com de ràpid circula el tren? <span>+</span>
+    </button>
+    <div class="faq-resposta">
+        <div>
+            <p>Pots veure la situació del tren al mapa i fer amidaments, a banda de conèixer la velocitat prement el següent botó:</p>
+            <button id="btnObrirMapa" class="btn-mapa-faq">
+                📍 Obrir Mapa Interactiu
+            </button>
+        </div>
+    </div>
+</div>
 
 
 
@@ -1626,6 +1678,54 @@ function obrirRetards() {
             });
         });
     </script>
+
+<div id="modalMapa" class="modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center;">
+    <div class="modal-content modal-mapa">
+        <span class="close-mapa">&times;</span>
+        <iframe id="iframeMapa" src="" width="100%" height="100%" style="border:none; border-radius: 8px;"></iframe>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const modalMapa = document.getElementById("modalMapa");
+    const btnMapa = document.getElementById("btnObrirMapa");
+    const closeMapa = document.querySelector(".close-mapa");
+    const iframeMapa = document.getElementById("iframeMapa");
+    const urlMapa = "https://script.google.com/macros/s/AKfycbzgCfBvMKIaQvSEAx1urS1MKBQkSovG4KeWLKt2EsSn_D-Reh2wMjsZbVaprNMvpDOsEg/exec";
+
+    // OBRIR: Mostrem la finestra i carreguem el mapa només el primer cop
+    if (btnMapa && modalMapa) {
+        btnMapa.addEventListener("click", function(event) {
+            event.preventDefault();
+            modalMapa.style.display = "flex"; // Usem flex per centrar-ho
+            
+            // Si el mapa encara no s'ha carregat, li posem la URL
+            if (!iframeMapa.src.includes("script.google.com")) {
+                iframeMapa.src = urlMapa;
+            }
+        });
+    }
+
+    // TANCAR: Amb la creu
+    if (closeMapa) {
+        closeMapa.addEventListener("click", function() {
+            modalMapa.style.display = "none";
+        });
+    }
+
+    // TANCAR: Clicant fora de la caixa blanca (Afegeix l'event listener per no esborrar el de la calculadora)
+    window.addEventListener("click", function(event) {
+        if (event.target === modalMapa) {
+            modalMapa.style.display = "none";
+        }
+    });
+});
+</script>
+
+
+
+
 
 </body>
 </html>
