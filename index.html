@@ -116,6 +116,8 @@
     .unitat-tren {
         transform: translateZ(0);
         -webkit-transform: translateZ(0);
+        will-change: transform; /* Prepara la GPU abans que comenci l'animació */
+        backface-visibility: hidden; /* Evita parpellejos en mòbils */
     }
 
 /* ZONA DEL TREN */
@@ -131,13 +133,14 @@
 /* 1. ANIMACIONS MAJESTUOSES */
 /* Revisa també l'animació per assegurar-te que comença ben lluny a l'esquerra */
 @keyframes moviment-dreta {
-    0% { transform: translateX(-1000px); } /* Comença fora de pantalla a l'esquerra */
-    100% { transform: translateX(110vw); }  /* Acaba fora de pantalla a la dreta */
+    0% { transform: translateX(-120%); } /* Comença just fora a l'esquerra, sigui quina sigui la mida */
+    100% { transform: translateX(120vw); } 
 }
 
 @keyframes moviment-esquerra {
-    0% { transform: translateX(1200px) scaleX(-1); }
-    100% { transform: translateX(-110vw) scaleX(-1); }
+    0% { transform: translateX(120vw) scaleX(-1); } /* Ve des de la dreta de la pantalla */
+    100% { transform: translateX(-120%) scaleX(-1); }
+}
 }
 
 /* 2. LES VIES (Amb balast i traverses) */
@@ -1205,22 +1208,19 @@ body.dark-mode .seccio-qr img {
 
 
           <div class="faq-item">
-         <button class="faq-pregunta" onclick="toggleFaq(this)"> Com invito algú a la comunitat? <span>+</span></button>
-         <div class="faq-resposta">
-         <div><p> 
-                                    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <button class="faq-pregunta" onclick="toggleFaq(this)"> Com invito algú a la comunitat? <span>+</span></button>
+    <div class="faq-resposta">
+        <div>
+            <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 
-                <div id="captcha-container" style="margin-top: 20px; padding: 5px; border: 1px solid #eee; border-radius: 8px;">
+            <div id="captcha-container" style="margin-top: 20px; padding: 15px; border: 1px solid var(--border); border-radius: 8px;">
                 <p><strong>Verificació de seguretat:</strong></p>
                 <p>Resol el captcha per veure l'enllaç de la comunitat.</p>
-                
-                <div class="h-captcha" 
-                    data-sitekey="4cd4f9fa-3a4e-4c34-9d5e-670a55909e38" 
-                    data-callback="onSuccess">
-                </div>
-                </div>
+                <div class="h-captcha" data-sitekey="4cd4f9fa-3a4e-4c34-9d5e-670a55909e38" data-callback="onSuccess"></div>
+            </div>
 
-                <div id="comunitat-secret" class="seccio-qr" style="display: none;"></div>                <h3>🎉 Benvingut/da a la comunitat!</h3>
+            <div id="comunitat-secret" class="seccio-qr" style="display: none;">
+                <h3>🎉 Benvingut/da a la comunitat!</h3>
                 <p>Fes clic a l'enllaç o escaneja el codi:</p>
                 
                 <a href="https://chat.whatsapp.com/GFbiieQvIu2ETQKZUxrjZS" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #0088cc; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 15px;">
@@ -1229,20 +1229,18 @@ body.dark-mode .seccio-qr img {
                 
                 <br>
                 <img src="media/qr.jpeg" alt="Codi QR" style="max-width: 200px; height: auto;">
-                </div>
+            </div> </div>
+    </div>
+</div>
 
-                <script type="text/javascript">
-                // Aquesta funció s'executa automàticament quan l'usuari resol el captcha
-                function onSuccess(token) {
-                    if (token) {
-                    // Amaguem el bloc del captcha amb una petita transició si vols
-                    document.getElementById('captcha-container').style.display = 'none';
-                    
-                    // Mostrem el contingut de la comunitat
-                    document.getElementById('comunitat-secret').style.display = 'block';
-                    }
-                }
-                </script>
+<script type="text/javascript">
+function onSuccess(token) {
+    if (token) {
+        document.getElementById('captcha-container').style.display = 'none';
+        document.getElementById('comunitat-secret').style.display = 'block';
+    }
+}
+</script>
 
 
 
