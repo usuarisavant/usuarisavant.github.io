@@ -133,13 +133,13 @@
 /* 1. ANIMACIONS MAJESTUOSES */
 /* Revisa també l'animació per assegurar-te que comença ben lluny a l'esquerra */
 @keyframes moviment-dreta {
-    0% { transform: translateX(-120%); } /* Comença just fora a l'esquerra, sigui quina sigui la mida */
+    0% { transform: translateX(-140%); } /* Comença just fora a l'esquerra, sigui quina sigui la mida */
     100% { transform: translateX(120vw); } 
 }
 
 @keyframes moviment-esquerra {
     0% { transform: translateX(120vw) scaleX(-1); } /* Ve des de la dreta de la pantalla */
-    100% { transform: translateX(-120%) scaleX(-1); }
+    100% { transform: translateX(-140%) scaleX(-1); }
 }
 }
 
@@ -168,11 +168,11 @@
 .anada {
     bottom: 4px;
     left: 0; /* Important: el punt d'origen és 0 perquè l'animació ja el mou */
-    animation: moviment-dreta 25s linear infinite;
+    animation: moviment-dreta 15s linear infinite;
     animation-delay: 0s;
 }
 
-.tornada { bottom: 22px; animation: moviment-esquerra 32s linear infinite; animation-delay: -10s; }
+.tornada { bottom: 22px; animation: moviment-esquerra 22s linear infinite; animation-delay: -10s; }
 
 
 
@@ -950,7 +950,7 @@ iframe.goog-te-menu-frame,
 
 @media screen and (max-width: 360px) {
     .h-captcha {
-        transform: scale(0.75); /* Redueix una mica la mida */
+        transform: scale(0.65); /* Redueix una mica la mida */
         transform-origin: center center;
     }
 }
