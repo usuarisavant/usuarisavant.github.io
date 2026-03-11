@@ -934,11 +934,12 @@ iframe.goog-te-menu-frame,
     z-index: 100;
 }
 
-
+@media screen and (max-width: 360px) {
     .h-captcha {
-        transform: scale(0.4); /* Redueix una mica la mida */
+        transform: scale(0.75); /* Redueix una mica la mida */
         transform-origin: center center;
     }
+}
 
 
 
@@ -1183,7 +1184,7 @@ iframe.goog-te-menu-frame,
          <div><p> 
                                     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 
-                <div id="captcha-container" style="margin-top: 20px; padding: 15px; border: 1px solid #eee; border-radius: 8px;">
+                <div id="captcha-container" style="margin-top: 20px; padding: 2px; border: 1px solid #eee; border-radius: 8px;">
                 <p><strong>Verificació de seguretat:</strong></p>
                 <p>Resol el captcha per veure l'enllaç de la comunitat.</p>
                 
