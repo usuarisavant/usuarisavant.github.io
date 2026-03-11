@@ -130,17 +130,7 @@
     overflow: hidden;
 }
 
-/* 1. ANIMACIONS MAJESTUOSES */
-/* Revisa també l'animació per assegurar-te que comença ben lluny a l'esquerra */
-@keyframes moviment-dreta {
-    0% { transform: translateX(-140%); } /* Comença just fora a l'esquerra, sigui quina sigui la mida */
-    100% { transform: translateX(120vw); } 
-}
 
-@keyframes moviment-esquerra {
-    0% { transform: translateX(120vw) scaleX(-1); } /* Ve des de la dreta de la pantalla */
-    100% { transform: translateX(-140%) scaleX(-1); }
-}
 }
 
 /* 2. LES VIES (Amb balast i traverses) */
@@ -163,6 +153,18 @@
     align-items: flex-end;
     gap: 1px;
     will-change: transform;
+}
+
+/* 1. ANIMACIONS MAJESTUOSES */
+/* Revisa també l'animació per assegurar-te que comença ben lluny a l'esquerra */
+@keyframes moviment-dreta {
+    0% { transform: translateX(-140%); } /* Comença just fora a l'esquerra, sigui quina sigui la mida */
+    100% { transform: translateX(120vw); } 
+}
+
+@keyframes moviment-esquerra {
+    0% { transform: translateX(120vw) scaleX(-1); } /* Ve des de la dreta de la pantalla */
+    100% { transform: translateX(-140%) scaleX(-1); }
 }
 
 .anada {
@@ -1213,8 +1215,8 @@ body.dark-mode .seccio-qr img {
         <div>
             <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 
-            <div id="captcha-container" style="margin-top: 20px; padding: 15px; border: 1px solid var(--border); border-radius: 8px;">
-                <p><strong>Verificació de seguretat:</strong></p>
+            <div id="captcha-container" style="margin-top: 10px;">
+            </div>
                 <p>Resol el captcha per veure l'enllaç de la comunitat.</p>
                 <div class="h-captcha" data-sitekey="4cd4f9fa-3a4e-4c34-9d5e-670a55909e38" data-callback="onSuccess"></div>
             </div>
