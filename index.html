@@ -1169,6 +1169,65 @@ iframe.goog-te-menu-frame,
         </div>
         </div>
 
+
+          <div class="faq-item">
+         <button class="faq-pregunta" onclick="toggleFaq(this)"> Com puc convidar algú a la comunitat? <span>+</span></button>
+         <div class="faq-resposta">
+         <div><p> 
+                                    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
+                <div id="captcha-container" style="margin-top: 20px; padding: 15px; border: 1px solid #eee; border-radius: 8px;">
+                <p><strong>Verificació de seguretat:</strong></p>
+                <p>Resol el captcha per veure l'enllaç de la comunitat.</p>
+                
+                <div class="h-captcha" 
+                    data-sitekey="4cd4f9fa-3a4e-4c34-9d5e-670a55909e38" 
+                    data-callback="onSuccess">
+                </div>
+                </div>
+
+                <div id="comunitat-secret" style="display: none; text-align: center; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+                <h3>🎉 Benvingut/da a la comunitat!</h3>
+                <p>Fes clic a l'enllaç o escaneja el codi:</p>
+                
+                <a href="https://chat.whatsapp.com/GFbiieQvIu2ETQKZUxrjZS" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #0088cc; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 15px;">
+                    Unir-se a la comunitat de Whatsapp
+                </a>
+                
+                <br>
+                <img src="media/qr.jpg" alt="Codi QR" style="max-width: 200px; height: auto;">
+                </div>
+
+                <script type="text/javascript">
+                // Aquesta funció s'executa automàticament quan l'usuari resol el captcha
+                function onSuccess(token) {
+                    if (token) {
+                    // Amaguem el bloc del captcha amb una petita transició si vols
+                    document.getElementById('captcha-container').style.display = 'none';
+                    
+                    // Mostrem el contingut de la comunitat
+                    document.getElementById('comunitat-secret').style.display = 'block';
+                    }
+                }
+                </script>
+
+
+
+
+
+
+         </p>
+        </div>
+         </div>
+        </div>
+
+
+
+
+
+
+
+
         <div class="faq-item">
             <button class="faq-pregunta" onclick="toggleFaq(this)">Normatives dels grups <span>+</span></button>
             <div class="faq-resposta">
