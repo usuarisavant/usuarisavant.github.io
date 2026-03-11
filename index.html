@@ -12,6 +12,7 @@
     box-sizing: border-box;
 }
 
+
         /* 1. VARIABLES I TEMES */
         :root {
             --bg: #f4f4f9;
@@ -106,6 +107,16 @@
     -webkit-appearance: none;
 }
 
+/* =========================================
+   OPTIMITZACIÓ PER A MÒBILS (Pantalles Verticals)
+   ========================================= */
+@media (max-width: 768px) {
+    
+    /* 1. ACCELERACIÓ PER HARDWARE EXTRA */
+    .unitat-tren {
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
 
 /* ZONA DEL TREN */
 .nav-train-zone {
@@ -941,7 +952,22 @@ iframe.goog-te-menu-frame,
     }
 }
 
+/* Aquest codi farà que el requadre s'adapti sol al mode fosc */
+.seccio-qr {
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    background-color: var(--card-bg); /* Utilitza el blanc o gris fosc automàticament */
+    color: var(--text);          /* Utilitza el text fosc o clar automàticament */
+    text-align: center;
+}
 
+/* Retoc per al QR en mode fosc per evitar que "cremi" la vista */
+body.dark-mode .seccio-qr img {
+    filter: brightness(0.9);
+    border: 5px solid white; /* El marc blanc és necessari per escanejar bé */
+}
 
     </style>
 </head>
@@ -1184,7 +1210,7 @@ iframe.goog-te-menu-frame,
          <div><p> 
                                     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 
-                <div id="captcha-container" style="margin-top: 20px; padding: 2px; border: 1px solid #eee; border-radius: 8px;">
+                <div id="captcha-container" style="margin-top: 20px; padding: 5px; border: 1px solid #eee; border-radius: 8px;">
                 <p><strong>Verificació de seguretat:</strong></p>
                 <p>Resol el captcha per veure l'enllaç de la comunitat.</p>
                 
@@ -1194,8 +1220,7 @@ iframe.goog-te-menu-frame,
                 </div>
                 </div>
 
-                <div id="comunitat-secret" style="display: none; text-align: center; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
-                <h3>🎉 Benvingut/da a la comunitat!</h3>
+                <div id="comunitat-secret" class="seccio-qr" style="display: none;"></div>                <h3>🎉 Benvingut/da a la comunitat!</h3>
                 <p>Fes clic a l'enllaç o escaneja el codi:</p>
                 
                 <a href="https://chat.whatsapp.com/GFbiieQvIu2ETQKZUxrjZS" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #0088cc; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 15px;">
