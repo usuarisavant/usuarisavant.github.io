@@ -934,6 +934,14 @@ iframe.goog-te-menu-frame,
     z-index: 100;
 }
 
+@media screen and (max-width: 360px) {
+    .h-captcha {
+        transform: scale(0.85); /* Redueix una mica la mida */
+        transform-origin: center center;
+    }
+}
+
+
 
     </style>
 </head>
@@ -1171,7 +1179,7 @@ iframe.goog-te-menu-frame,
 
 
           <div class="faq-item">
-         <button class="faq-pregunta" onclick="toggleFaq(this)"> Com puc convidar algú a la comunitat? <span>+</span></button>
+         <button class="faq-pregunta" onclick="toggleFaq(this)"> Com invito algú a la comunitat? <span>+</span></button>
          <div class="faq-resposta">
          <div><p> 
                                     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
@@ -1195,7 +1203,7 @@ iframe.goog-te-menu-frame,
                 </a>
                 
                 <br>
-                <img src="media/qr.jpeg" alt="Codi QR" style="max-width: 200px; height: auto;">
+                <img src="media/qr.jpg" alt="Codi QR" style="max-width: 200px; height: auto;">
                 </div>
 
                 <script type="text/javascript">
