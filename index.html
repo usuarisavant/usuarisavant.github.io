@@ -558,66 +558,81 @@ body.dark-mode .finestra {
     padding: 20px;
     }
 
-        /* 6. MINI-CARRUSSEL */
-        .mini-carousel { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
-        .mini-slides { flex-grow: 1; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); overflow: hidden; }
-        .mini-slide { display: none; }
-        .mini-slide.active { display: block; }
-        
-        .header-slide {
-            display: flex; align-items: center; padding: 12px; gap: 12px;
-            background: rgba(0,0,0,0.05); border-bottom: 1px solid var(--border);
-        }
-        .mini-logo { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+        /* =========================================
+   6. MINI-CARRUSSEL (Versió Final)
+========================================= */
 
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 15px; }
-        th { color: var(--accent); width: 30%; }
+.mini-carousel { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-top: 15px; 
+    width: 100%; 
+}
 
-        .nav-btn {
-    /* Reset per a Safari/iOS */
-    -webkit-appearance: none;
+.mini-slides { 
+    flex-grow: 1; 
+    min-width: 0; /* CLAU: Evita que la taula empenyi i deformi els botons */
+    border: 1px solid var(--border); 
+    border-radius: 8px; 
+    background: var(--bg); 
+    overflow: hidden; 
+}
+
+.mini-slide { display: none; }
+.mini-slide.active { display: block; }
+
+.header-slide {
+    display: flex; align-items: center; padding: 12px; gap: 12px;
+    background: rgba(0,0,0,0.05); border-bottom: 1px solid var(--border);
+}
+.mini-logo { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 15px; }
+th { color: var(--accent); width: 30%; }
+
+/* --- BOTONS DE NAVEGACIÓ --- */
+.nav-btn {
+    flex-shrink: 0; /* CLAU: Blindatge perquè el botó MAI s'aixafi */
+    -webkit-appearance: none; /* Reset per a Safari/iOS */
     appearance: none;
     
-    /* Estil base */
     background: var(--card-bg); 
     border: 1px solid var(--border); 
-    border-radius: 50%; /* Això els fa rodons */
+    border-radius: 50%; 
     width: 35px; 
     height: 35px; 
     cursor: pointer; 
     color: var(--text);
     
-    /* Centrat de la fletxa */
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
-    
-    /* Suavitat */
     transition: background 0.2s, color 0.2s;
- }
+}
 
- .nav-btn:hover { 
+/* Efecte en passar-hi el ratolí per sobre */
+.nav-btn:hover { 
     background: var(--accent); 
     color: white; 
- }
+}
 
- /* La clau per al Safari: treure el focus visual i l'outline */
- .nav-btn:focus,
- .nav-btn:active,
- .nav-btn:focus-visible {
+/* Evita el color clavat i l'outline del navegador en clicar */
+.nav-btn:focus,
+.nav-btn:focus-visible {
     outline: none !important;
-    -webkit-tap-highlight-color: transparent; /* Treu el flaix gris en mòbils */
-    background: var(--card-bg); /* Torna al color base */
+    -webkit-tap-highlight-color: transparent;
+    background: var(--card-bg); /* Força el retorn al color base */
     color: var(--text);
- }
+}
 
- /* Si vols que mentre el cliques s'il·lumini, però s'apagui en anar-te'n */
- .nav-btn:active {
+/* Il·lumina el botó NOMÉS durant el moment de prémer-lo */
+.nav-btn:active {
     background: var(--accent);
     color: white;
- }
+}
 
      
 /* EL BOTÓ VISUAL */
