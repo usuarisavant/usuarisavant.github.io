@@ -574,11 +574,38 @@ body.dark-mode .finestra {
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 15px; }
         th { color: var(--accent); width: 30%; }
 
+               /* 1. Modifiquem l'estat base del botó */
         .nav-btn {
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 50%;
-            width: 35px; height: 35px; cursor: pointer; color: var(--text);
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            border-radius: 50%;
+            width: 35px; 
+            height: 35px; 
+            cursor: pointer; 
+            color: var(--text);
+    
+            /* SOLUCIÓ SAFARI: Elimina el recuadre gris natiu de iOS al tocar */
+            -webkit-tap-highlight-color: transparent;
+    
+            /* Evita que el text s'esculli per error en fer clics ràpids */
+            user-select: none;
+    
+            /* Opcional: una transició suau fa que si es queda un pèl "enganxat", no sigui tan brusc */
+            transition: background 0.2s ease, color 0.2s ease;
         }
-        .nav-btn:hover { background: var(--accent); color: white; }
+
+        /* 2. El "truc" mestre: només apliquem el hover si l'usuari realment té un ratolí */
+        @media (hover: hover) {
+            .nav-btn:hover { 
+                background: var(--accent); 
+                color: white; 
+            }
+        }
+
+/* 3. Opcional: un feedback molt ràpid que desapareix sol al deixar de clicar */
+.nav-btn:active {
+    background: rgba(0,0,0,0.1); /* Un gris molt tènue només mentre el dit és a sobre */
+}
 
      
 /* EL BOTÓ VISUAL */
