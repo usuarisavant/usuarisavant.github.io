@@ -575,19 +575,49 @@ body.dark-mode .finestra {
         th { color: var(--accent); width: 30%; }
 
         .nav-btn {
-            background: var(--card-bg);
-            color: var(--text);
-            outline: none;
-        }
-        .nav-btn:hover { background: var(--accent);
-        color: white;
-        }
+    /* Reset per a Safari/iOS */
+    -webkit-appearance: none;
+    appearance: none;
+    
+    /* Estil base */
+    background: var(--card-bg); 
+    border: 1px solid var(--border); 
+    border-radius: 50%; /* Això els fa rodons */
+    width: 35px; 
+    height: 35px; 
+    cursor: pointer; 
+    color: var(--text);
+    
+    /* Centrat de la fletxa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    
+    /* Suavitat */
+    transition: background 0.2s, color 0.2s;
+ }
 
-        .nav-btn:active {
-         transform: scale(0.95);
-         background: var(--accent);
-         opacity: 0.8;
-        }
+ .nav-btn:hover { 
+    background: var(--accent); 
+    color: white; 
+ }
+
+ /* La clau per al Safari: treure el focus visual i l'outline */
+ .nav-btn:focus,
+ .nav-btn:active,
+ .nav-btn:focus-visible {
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent; /* Treu el flaix gris en mòbils */
+    background: var(--card-bg); /* Torna al color base */
+    color: var(--text);
+ }
+
+ /* Si vols que mentre el cliques s'il·lumini, però s'apagui en anar-te'n */
+ .nav-btn:active {
+    background: var(--accent);
+    color: white;
+ }
 
      
 /* EL BOTÓ VISUAL */
