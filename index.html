@@ -597,15 +597,14 @@ th { color: var(--accent); width: 30%; }
     flex-shrink: 0; /* CLAU: Blindatge perquè el botó MAI s'aixafi */
     -webkit-appearance: none; /* Reset per a Safari/iOS */
     appearance: none;
-    
+    background-color: var(--card-bg) !important;
     background: var(--card-bg); 
     border: 1px solid var(--border); 
     border-radius: 50%; 
     width: 35px; 
     height: 35px; 
     cursor: pointer; 
-    color: var(--text);
-    
+    color: var(--text) !important;    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -613,26 +612,25 @@ th { color: var(--accent); width: 30%; }
     transition: background 0.2s, color 0.2s;
 }
 
-/* Efecte en passar-hi el ratolí per sobre */
-.nav-btn:hover { 
-    background: var(--accent); 
-    color: white; 
-}
-
-/* 1. L'efecte hover NOMÉS per a ordinadors (evita el Sticky Hover a Safari/iOS) */
-@media (hover: hover) and (pointer: fine) {
-    .nav-btn:hover { 
-        background-color: var(--accent); 
-        color: white; 
+/* 2. NOMÉS apliquem hover en ordinadors amb ratolí */
+@media (hover: hover) {
+    .nav-btn:hover {
+        background-color: var(--accent) !important;
+        color: white !important;
     }
 }
 
-/* 2. Reseteig contundent dels estats problemàtics al Safari */
-.nav-btn:focus,
+/* 3. Per a mòbils i Safari: color NOMÉS mentre es prem */
+.nav-btn:active {
+    background-color: var(--accent) !important;
+    color: white !important;
+}
+
+/* 4. Bloquegem qualsevol intent de Safari de mantenir el focus */
+.nav-btn:focus, 
 .nav-btn:focus-visible {
-    outline: none;
-    -webkit-tap-highlight-color: transparent !important;
-    background-color: var(--card-bg) !important; 
+    outline: none !important;
+    background-color: var(--card-bg) !important;
     color: var(--text) !important;
 }
 
@@ -1487,20 +1485,29 @@ function onSuccess(token) {
             }
         }
 
-        // CARRUSSEL
+        
         function moveMiniSlide(step, btn) {
-            const container = btn.closest('.mini-carousel');
-            const slides = container.querySelectorAll('.mini-slide');
-            let currentIdx = Array.from(slides).findIndex(s => s.classList.contains('active'));
-            slides[currentIdx].classList.remove('active');
-            let nextIdx = (currentIdx + step + slides.length) % slides.length;
-            slides[nextIdx].classList.add('active');
+    const container = btn.closest('.mini-carousel');
+    const slides = container.querySelectorAll('.mini-slide');
+    let currentIdx = Array.from(slides).findIndex(s => s.classList.contains('active'));
+    
+    slides[currentIdx].classList.remove('active');
+    let nextIdx = (currentIdx + step + slides.length) % slides.length;
+    slides[nextIdx].classList.add('active');
 
-            // SOLUCIÓ PER A SAFARI: 
-         // Força al botó a perdre el focus perquè no es quedi el color "clavat"
-          if (btn) {
-          btn.blur();
+    // SOLUCIÓ RADICAL:
+    if (btn) {
+        btn.blur();
+        // Forcem un petit refresc visual de l'element
+        btn.style.pointerEvents = 'none';
+        setTimeout(() => {
+            btn.style.pointerEvents = 'auto';
+        }, 50);
     }
+}
+
+
+
 
 
         }
