@@ -630,7 +630,7 @@ th { color: var(--accent); width: 30%; }
 /* 2. Reseteig contundent dels estats problemàtics al Safari */
 .nav-btn:focus,
 .nav-btn:focus-visible {
-    outline: none !important;
+    outline: none;
     -webkit-tap-highlight-color: transparent !important;
     background-color: var(--card-bg) !important; 
     color: var(--text) !important;
@@ -1495,6 +1495,14 @@ function onSuccess(token) {
             slides[currentIdx].classList.remove('active');
             let nextIdx = (currentIdx + step + slides.length) % slides.length;
             slides[nextIdx].classList.add('active');
+
+            // SOLUCIÓ PER A SAFARI: 
+         // Força al botó a perdre el focus perquè no es quedi el color "clavat"
+          if (btn) {
+          btn.blur();
+    }
+
+
         }
     </script>
 
