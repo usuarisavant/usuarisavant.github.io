@@ -619,19 +619,28 @@ th { color: var(--accent); width: 30%; }
     color: white; 
 }
 
-/* Evita el color clavat i l'outline del navegador en clicar */
+/* 1. L'efecte hover NOMÉS per a ordinadors (evita el Sticky Hover a Safari/iOS) */
+@media (hover: hover) and (pointer: fine) {
+    .nav-btn:hover { 
+        background-color: var(--accent); 
+        color: white; 
+    }
+}
+
+/* 2. Reseteig contundent dels estats problemàtics al Safari */
 .nav-btn:focus,
 .nav-btn:focus-visible {
     outline: none !important;
-    -webkit-tap-highlight-color: transparent;
-    background: var(--card-bg); /* Força el retorn al color base */
-    color: var(--text);
+    -webkit-tap-highlight-color: transparent !important;
+    background-color: var(--card-bg) !important; 
+    color: var(--text) !important;
 }
 
-/* Il·lumina el botó NOMÉS durant el moment de prémer-lo */
+/* 3. L'efecte visual quan el dit està físicament prement la pantalla */
 .nav-btn:active {
-    background: var(--accent);
-    color: white;
+    background-color: var(--accent) !important;
+    color: white !important;
+    transition: none; /* Treiem la transició perquè el clic se senti instantani */
 }
 
      
