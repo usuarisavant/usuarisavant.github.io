@@ -575,10 +575,19 @@ body.dark-mode .finestra {
         th { color: var(--accent); width: 30%; }
 
         .nav-btn {
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 50%;
-            width: 35px; height: 35px; cursor: pointer; color: var(--text);
+            background: var(--card-bg);
+            color: var(--text);
+            outline: none;
         }
-        .nav-btn:hover { background: var(--accent); color: white; }
+        .nav-btn:hover { background: var(--accent);
+        color: white;
+        }
+
+        .nav-btn:active {
+         transform: scale(0.95);
+         background: var(--accent);
+         opacity: 0.8;
+        }
 
      
 /* EL BOTÓ VISUAL */
