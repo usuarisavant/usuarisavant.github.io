@@ -558,88 +558,27 @@ body.dark-mode .finestra {
     padding: 20px;
     }
 
-        /* =========================================
-   6. MINI-CARRUSSEL (Versió Final)
-========================================= */
+        /* 6. MINI-CARRUSSEL */
+        .mini-carousel { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+        .mini-slides { flex-grow: 1; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); overflow: hidden; }
+        .mini-slide { display: none; }
+        .mini-slide.active { display: block; }
+        
+        .header-slide {
+            display: flex; align-items: center; padding: 12px; gap: 12px;
+            background: rgba(0,0,0,0.05); border-bottom: 1px solid var(--border);
+        }
+        .mini-logo { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
 
-.mini-carousel { 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    margin-top: 15px; 
-    width: 100%; 
-}
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 15px; }
+        th { color: var(--accent); width: 30%; }
 
-.mini-slides { 
-    flex-grow: 1; 
-    min-width: 0; /* CLAU: Evita que la taula empenyi i deformi els botons */
-    border: 1px solid var(--border); 
-    border-radius: 8px; 
-    background: var(--bg); 
-    overflow: hidden; 
-}
-
-.mini-slide { display: none; }
-.mini-slide.active { display: block; }
-
-.header-slide {
-    display: flex; align-items: center; padding: 12px; gap: 12px;
-    background: rgba(0,0,0,0.05); border-bottom: 1px solid var(--border);
-}
-.mini-logo { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
-
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 15px; }
-th { color: var(--accent); width: 30%; }
-
-/* --- BOTONS DE NAVEGACIÓ --- */
-.nav-btn {
-    flex-shrink: 0; /* CLAU: Blindatge perquè el botó MAI s'aixafi */
-    -webkit-appearance: none; /* Reset per a Safari/iOS */
-    appearance: none;
-    background-color: var(--card-bg) !important;
-    background: var(--card-bg); 
-    border: 1px solid var(--border); 
-    border-radius: 50%; 
-    width: 35px; 
-    height: 35px; 
-    cursor: pointer; 
-    color: var(--text) !important;    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    transition: background 0.2s, color 0.2s;
-}
-
-/* 2. NOMÉS apliquem hover en ordinadors amb ratolí */
-@media (hover: hover) {
-    .nav-btn:hover {
-        background-color: var(--accent) !important;
-        color: white !important;
-    }
-}
-
-/* 3. Per a mòbils i Safari: color NOMÉS mentre es prem */
-.nav-btn:active {
-    background-color: var(--accent) !important;
-    color: white !important;
-}
-
-/* 4. Bloquegem qualsevol intent de Safari de mantenir el focus */
-.nav-btn:focus, 
-.nav-btn:focus-visible {
-    outline: none !important;
-    background-color: var(--card-bg) !important;
-    color: var(--text) !important;
-}
-
-/* 3. L'efecte visual quan el dit està físicament prement la pantalla */
-.nav-btn:active {
-    background-color: var(--accent) !important;
-    color: white !important;
-    transition: none; /* Treiem la transició perquè el clic se senti instantani */
-}
+        .nav-btn {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 50%;
+            width: 35px; height: 35px; cursor: pointer; color: var(--text);
+        }
+        .nav-btn:hover { background: var(--accent); color: white; }
 
      
 /* EL BOTÓ VISUAL */
@@ -1485,31 +1424,14 @@ function onSuccess(token) {
             }
         }
 
-        
+        // CARRUSSEL
         function moveMiniSlide(step, btn) {
-    const container = btn.closest('.mini-carousel');
-    const slides = container.querySelectorAll('.mini-slide');
-    let currentIdx = Array.from(slides).findIndex(s => s.classList.contains('active'));
-    
-    slides[currentIdx].classList.remove('active');
-    let nextIdx = (currentIdx + step + slides.length) % slides.length;
-    slides[nextIdx].classList.add('active');
-
-    // SOLUCIÓ RADICAL:
-    if (btn) {
-        btn.blur();
-        // Forcem un petit refresc visual de l'element
-        btn.style.pointerEvents = 'none';
-        setTimeout(() => {
-            btn.style.pointerEvents = 'auto';
-        }, 50);
-    }
-}
-
-
-
-
-
+            const container = btn.closest('.mini-carousel');
+            const slides = container.querySelectorAll('.mini-slide');
+            let currentIdx = Array.from(slides).findIndex(s => s.classList.contains('active'));
+            slides[currentIdx].classList.remove('active');
+            let nextIdx = (currentIdx + step + slides.length) % slides.length;
+            slides[nextIdx].classList.add('active');
         }
     </script>
 
