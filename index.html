@@ -1053,31 +1053,35 @@ footer {
   }
 }
 
-/* Contenidor principal del modal */
+/* 1. L'overlay (el fons fosc) ha de ser fix i no moure's */
 .faq-legal-modal {
-  display: none;           /* Amagat per defecte */
+  display: none; 
   position: fixed; 
-  z-index: 9999;           /* Per sobre de tot */
+  z-index: 9999; 
   left: 0; top: 0;
-  width: 100%; height: 100%; 
+  width: 100%; 
+  height: 100%; 
   background-color: var(--faq-l-overlay); 
-  backdrop-filter: blur(4px); /* Efecte estètic de desenfocament */
+  backdrop-filter: blur(4px);
+  overflow: hidden; /* Evita que el fons fosc generi scroll propi */
 }
 
-/* La caixa blanca/fosca amb el contingut */
+/* 2. La caixa blanca ha de tenir una alçada màxima per cabre a la pantalla */
 .faq-legal-modal-content {
   background-color: var(--faq-l-bg);
   color: var(--faq-l-text);
-  margin: 10% auto; 
+  margin: 5vh auto; /* 5% d'espai a dalt */
   padding: 30px;
   border-radius: 12px;
-  border: 1px solid var(--faq-l-border);
   width: 90%; 
   max-width: 550px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  max-height: 90vh; /* No pot ser més alta que el 90% de la pantalla */
+  display: flex;
+  flex-direction: column; /* Organitza el contingut en vertical */
   position: relative;
-  line-height: 1.6;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
+
 
 /* La X de tancar */
 .faq-legal-modal-close-x {
@@ -1110,13 +1114,15 @@ footer {
   background-color: #0056b3;
 }
 
-/* Limitem l'alçada del contingut i activem el scroll */
+/* 3. L'element que realment fa l'scroll */
 .faq-legal-scrollable {
-  max-height: 60vh;          /* El text ocuparà com a màxim el 60% de l'alçada de la pantalla */
-  overflow-y: auto;          /* Activa el scroll vertical si el text no hi cap */
-  padding-right: 15px;       /* Espai perquè el scroll no trepitgi el text */
-  margin-bottom: 20px;
-  text-align: left;          /* Assegurem que el text estigui alineat a l'esquerra */
+  overflow-y: auto;  /* ACTIVA EL SCROLL AQUÍ */
+  flex-grow: 1;      /* Fa que ocupi tot l'espai disponible entre el títol i el botó */
+  padding-right: 15px;
+  margin: 20px 0;
+  text-align: left;
+  /* Millora per a mòbils */
+  -webkit-overflow-scrolling: touch; 
 }
 
 /* Estil per als paràgrafs per separar-los visualment */
