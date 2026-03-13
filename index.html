@@ -1998,13 +1998,18 @@ document.addEventListener("DOMContentLoaded", function() {
     legalBtn.onclick = function(e) {
       e.preventDefault(); // Evita que l'enllaç faci coses estranyes
       legalModal.style.display = "block";
+      document.body.style.overflow = "hidden"; // Bloqueja el scroll de la web de fons
     };
 
     // Tancar
-    const closeModal = () => legalModal.style.display = "none";
-    if(closeX) closeX.onclick = closeModal;
-    if(acceptBtn) acceptBtn.onclick = closeModal;
+        const closeModal = () => {
+      legalModal.style.display = "none";
+      document.body.style.overflow = "auto"; // Reactiva el scroll de la web
+};
 
+    // Assignem l'esdeveniment només si els elements existeixen (evita errors a la consola)
+    if (closeX) closeX.onclick = closeModal;
+    if (acceptBtn) acceptBtn.onclick = closeModal;
     // Tancar fora de la caixa
     window.onclick = function(event) {
       if (event.target === legalModal) closeModal();
