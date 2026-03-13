@@ -1053,33 +1053,50 @@ footer {
   }
 }
 
-/* 1. L'overlay (el fons fosc) ha de ser fix i no moure's */
+/* La finestra de fons */
 .faq-legal-modal {
-  display: none; 
-  position: fixed; 
-  z-index: 9999; 
-  left: 0; top: 0;
-  width: 100%; height: 100%; 
-  background-color: rgba(0, 0, 0, 0.7); 
-  backdrop-filter: blur(4px);
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px); /* Efecte modern */
 }
 
-/* 2. /* La caixa blanca (Contenidor Flex) */
+/* El contingut de la modal */
 .faq-legal-modal-content {
-  background-color: #ffffff;
-  color: #333333;
-  margin: 5vh auto; /* Marges a dalt i a baix */
-  width: 90%; 
-  max-width: 550px;
-  max-height: 85vh; /* ALÇADA MÀXIMA ESTRICTA */
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  
-  /* Flexbox per organitzar: Títol (dalt), Text (mig), Botó (baix) */
-  display: flex;
-  flex-direction: column;
+    background-color: var(--card-bg); /* Ara s'adaptarà al mode fosc */
+    color: var(--text);
+    margin: 5vh auto;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh; /* Evita que surti de la pantalla */
+    display: flex;
+    flex-direction: column; /* Necessari per l'scroll intern */
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
+/* L'àrea de text que ha de tenir scroll */
+.faq-legal-scrollable {
+    overflow-y: auto;
+    flex: 1; /* Agafa tot l'espai disponible entre títol i botó */
+    margin: 15px 0;
+    padding-right: 10px; /* Espai per a la barra de scroll */
+    -webkit-overflow-scrolling: touch; /* Scroll suau en iPhone */
+}
+
+/* Millora del text dins de l'scroll */
+.faq-legal-scrollable p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
 
 /* La X de tancar */
 .faq-legal-modal-close-x {
@@ -1143,6 +1160,38 @@ footer {
   .faq-legal-header, .faq-legal-footer { border-color: #333; }
   .faq-legal-modal { background-color: rgba(0, 0, 0, 0.85); }
 }
+
+.email-ocult {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    vertical-align: middle;
+}
+
+.email-link {
+    color: var(--accent);
+    text-decoration: underline;
+    font-weight: bold;
+    font-family: monospace; /* Queda molt bé per a emails */
+}
+
+/* Animació d'aparició suau */
+.pulse-animation {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Efecte de "batec" a l'emoji per convidar a clicar */
+#email-icon:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s;
+}
+
+
 
 
     </style>
@@ -2022,6 +2071,33 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    const emailIcon = document.getElementById('email-icon');
+    const emailText = document.getElementById('email-text');
+    
+    // El teu email en Base64
+    const secret = "c3Vwb3J0dXN1YXJpc2F2YW50QGdtYWlsLmNvbQ==";
+
+    if (emailIcon) {
+        emailIcon.addEventListener('click', function() {
+            const email = atob(secret); // Descodifica
+            
+            // Canviem l'icona per un sobre obert o la traiem
+            emailIcon.textContent = "📂"; 
+            
+            // Inserim l'enllaç real
+            emailText.innerHTML = `<a href="mailto:${email}" class="email-link pulse-animation">${email}</a>`;
+            
+            // Opcional: fer que l'icona ja no sigui clicable
+            emailIcon.style.cursor = "default";
+        });
+    }
+});
+
+</script>
+
 
 
 </body>
@@ -2032,31 +2108,42 @@ document.addEventListener("DOMContentLoaded", function() {
   <span>&copy; 2026 
 <a href="javascript:void(0)" id="faq-legal-trigger">Avís Legal i Contacte</a>
 </span>
+
+
+
 </footer>
 
 <div id="faq-legal-modal-container" class="faq-legal-modal">
   <div class="faq-legal-modal-content">
-  <div class="faq-legal-header">
-      <h2>Avís Legal</h2>
-    <span class="faq-legal-modal-close-x">&times;</span>
-    <h2>Avís legal i exempció de responsabilitat</h2>
     
+    <div class="faq-legal-header">
+      <h2>Avís legal i exempció</h2>
+      <span class="faq-legal-modal-close-x" id="faq-legal-close-x">&times;</span>
+    </div>
+
     <div class="faq-legal-scrollable">
-    <p>La informació proporcionada en aquesta secció de FAQs té un caràcter estrictament informatiu i general. L’usuari és l’únic responsable de verificar qualsevol dada o resultat obtingut a través d’aquest lloc web amb les fonts i canals oficials corresponents.
-    </p>
-<p>Les tarifes utilitzades per la calculadora poden ser modificades per Renfe en qualsevol moment, així com els percentatges de descompte aplicats. Aquest lloc web no garanteix que la informació mostrada estigui sempre actualitzada o coincideixi amb les condicions vigents en el moment de la consulta.
+      <p>La informació proporcionada en aquesta secció de FAQs té un caràcter estrictament informatiu i general. L’usuari és l’únic responsable de verificar qualsevol dada o resultat obtingut a través d’aquest lloc web amb les fonts i canals oficials corresponents.</p>
+      
+      <p>Les tarifes utilitzades per la calculadora poden ser modificades per Renfe en qualsevol moment, així com els percentatges de descompte aplicats.</p>
+      
+      <p>Aquest lloc web no recull, emmagatzema ni tracta cap dada personal dels usuaris.</p>
+      
+      <p>L’ús d’aquest lloc web implica l’acceptació d’aquest avís legal.</p>
+
+      <h3>Contacte de Suport</h3>
+      <p>Si tens qualsevol dubte tècnic o legal al voltant d'aquest web, pots contactar a:</p>
+     <p><strong>Email:</strong> 
+    <span id="email-container" class="email-ocult">
+        <span id="email-icon" style="cursor:pointer; font-size: 1.5rem;" title="Clica per veure l'email">✉️</span>
+        <span id="email-text"></span>
+    </span>
 </p>
-<p>Aquest lloc web no recull, emmagatzema ni tracta cap dada personal dels usuaris. Qualsevol càlcul o consulta es realitza de manera local i temporal, sense conservar cap tipus d’informació identificable.
-</p>
-<p> L’ús d’aquest lloc web implica l’acceptació d’aquest avís legal.
-    </p>
     </div>
-    <h3>Contacte de Suport</h3>
-    <p>Si tens qualsevol dubte tècnic o legal al voltant d'aquest web', pots contactar a:</p>
-    <p><strong>Email:</strong> <a href="mailto:suportusuarisavant@gmail.com">suportusuarisavant@gmail.com</a></p>
-    
-<button id="faq-legal-modal-accept-btn">D'acord</button>
+        <div class="faq-legal-footer">
+      <button id="faq-legal-modal-accept-btn">D'acord</button>
     </div>
+
+  </div>
 </div>
 
 
