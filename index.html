@@ -59,7 +59,7 @@
             width: 100%;
             height: 120px; /* Alçada augmentada per logo + trens */
             background: var(--nav-bg);
-            z-index: 2000;
+            z-index: 1000;
             transition: top 0.4s ease-in-out;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: flex;
@@ -1057,7 +1057,7 @@ footer {
 .faq-legal-modal {
     display: none;
     position: fixed;
-    z-index: 1001;
+    z-index: 2000;
     left: 0;
     top: 0;
     width: 100%;
@@ -1067,83 +1067,66 @@ footer {
 }
 
 /* El contingut de la modal */
+/* La caixa blanca principal */
 .faq-legal-modal-content {
-    background-color: var(--card-bg); /* Ara s'adaptarà al mode fosc */
+    background-color: var(--card-bg);
     color: var(--text);
-    margin: 5vh auto;
-    padding: 20px;
-    border-radius: 12px;
     width: 90%;
     max-width: 500px;
-    max-height: 85vh; /* Evita que surti de la pantalla */
+    max-height: 85vh;
+    margin: auto; /* Centrat vertical */
+    border-radius: 12px;
     display: flex;
-    flex-direction: column; /* Necessari per l'scroll intern */
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    flex-direction: column;
+    padding: 0 !important; /* ELIMINA PADDING AQUÍ */
+    overflow: hidden;
 }
 
-/* L'àrea de text que ha de tenir scroll */
-.faq-legal-scrollable {
-    overflow-y: auto;
-    flex: 1; /* Agafa tot l'espai disponible entre títol i botó */
-    margin: 15px 0;
-    padding-right: 10px; /* Espai per a la barra de scroll */
-    -webkit-overflow-scrolling: touch; /* Scroll suau en iPhone */
+/* La franja del títol: ARA ÉS ESTRETA */
+.faq-legal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px; /* Controla l'alçada de la franja aquí */
+    border-bottom: 1px solid var(--border);
+    background: transparent;
 }
 
-/* Millora del text dins de l'scroll */
-.faq-legal-scrollable p {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-bottom: 15px;
+.modal-titol {
+    margin: 0 !important; /* MATA EL MARGE DEL H3 */
+    padding: 0 !important;
+    font-size: 1.2rem;
+    line-height: 1;
 }
 
-/* La X de tancar */
 .faq-legal-modal-close-x {
-  position: absolute;
-  top: 15px; right: 20px;
-  font-size: 26px;
-  cursor: pointer;
-  color: var(--faq-l-text);
-  opacity: 0.5;
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 0.8; /* Perquè no ocupi espai cap amunt */
 }
 
-.faq-legal-modal-close-x:hover {
-  opacity: 1;
-}
-
-/* El botó d'acceptar */
-#faq-legal-modal-accept-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 20px;
-  font-weight: bold;
-  width: 100%;             /* Botó ample en mòbils */
-}
-
-#faq-legal-modal-accept-btn:hover {
-  background-color: #0056b3;
-}
-
-/* 3. L'element que realment fa l'scroll */
-/* El contenidor que fa l'SCROLL */
+/* El text amb scroll */
 .faq-legal-scrollable {
-  flex: 1;             /* Ocupa tot l'espai restant */
-  overflow-y: auto;    /* ACTIVA L'SCROLL VERTICAL */
-  min-height: 0;       /* EL TRUC MÀGIC: Permet que la caixa s'encongeixi i forci l'scroll */
-  padding: 20px 25px;
-  text-align: left;
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px 20px; /* El padding del text va aquí dins */
+    -webkit-overflow-scrolling: touch;
 }
-.faq-legal-scrollable p { margin-bottom: 15px; line-height: 1.6; }
 
-/* Estil per als paràgrafs per separar-los visualment */
 .faq-legal-scrollable p {
-  margin-bottom: 15px;       /* Crea l'espai real entre paràgrafs */
-  display: block;            /* Força que cada <p> sigui un bloc independent */
+    margin-top: 0;
+    margin-bottom: 15px; /* Espai entre paràgrafs */
+}
+
+.modal-titol-secundari {
+    margin: 20px 0 10px 0 !important; /* Espai controlat pel segon títol */
+}
+
+/* El botó de sota */
+.faq-legal-footer {
+    padding: 15px;
+    border-top: 1px solid var(--border);
+    text-align: center;
 }
 
 /* Personalització de la barra de scroll (opcional, per a un look més modern) */
@@ -2043,25 +2026,39 @@ document.addEventListener("DOMContentLoaded", function() {
   const legalBtn = document.getElementById("faq-legal-trigger");
   const closeX = document.querySelector(".faq-legal-modal-close-x");
   const acceptBtn = document.getElementById("faq-legal-modal-accept-btn");
+  
+  // Seleccionem la barra de navegació que et dóna problemes
+  const navbar = document.querySelector("header"); 
 
   if (legalBtn && legalModal) {
-    // Obrir i bloquejar fons
+    // FUNCIÓ OBRIR
     legalBtn.onclick = function(e) {
       e.preventDefault();
       legalModal.style.display = "block";
-      document.body.style.overflow = "hidden"; 
+      document.body.style.overflow = "hidden"; // Bloqueja scroll fons
+      
+      // OCULTEM LA BARRA perquè no es vegi per sobre
+      if (navbar) {
+          navbar.style.visibility = "hidden"; 
+          navbar.style.opacity = "0"; // Opcional per a una transició suau
+      }
     };
 
-    // Tancar i desbloquejar fons
+    // FUNCIÓ TANCAR
     const closeModal = () => {
       legalModal.style.display = "none";
-      document.body.style.overflow = ""; // Restaura el comportament per defecte
+      document.body.style.overflow = ""; // Restaura scroll
+      
+      // TORNEM A MOSTRAR LA BARRA
+      if (navbar) {
+          navbar.style.visibility = "visible";
+          navbar.style.opacity = "1";
+      }
     };
 
     if(closeX) closeX.onclick = closeModal;
     if(acceptBtn) acceptBtn.onclick = closeModal;
 
-    // Tancar si es clica fora de la caixa blanca
     window.onclick = function(event) {
       if (event.target === legalModal) closeModal();
     };
@@ -2117,32 +2114,28 @@ document.addEventListener("DOMContentLoaded", function() {
   <div class="faq-legal-modal-content">
     
     <div class="faq-legal-header">
-      <h2>Avís legal i exempció</h2>
+      <h3 class="modal-titol">Avís legal i exempció</h3>
       <span class="faq-legal-modal-close-x" id="faq-legal-close-x">&times;</span>
     </div>
 
     <div class="faq-legal-scrollable">
       <p>La informació proporcionada en aquesta secció de FAQs té un caràcter estrictament informatiu i general. L’usuari és l’únic responsable de verificar qualsevol dada o resultat obtingut a través d’aquest lloc web amb les fonts i canals oficials corresponents.</p>
-      
       <p>Les tarifes utilitzades per la calculadora poden ser modificades per Renfe en qualsevol moment, així com els percentatges de descompte aplicats.</p>
-      
       <p>Aquest lloc web no recull, emmagatzema ni tracta cap dada personal dels usuaris.</p>
-      
       <p>L’ús d’aquest lloc web implica l’acceptació d’aquest avís legal.</p>
 
-      <h3>Contacte de Suport</h3>
+      <h3 class="modal-titol-secundari">Contacte de Suport</h3>
       <p>Si tens qualsevol dubte tècnic o legal al voltant d'aquest web, pots contactar a:</p>
-     <p><strong>Email:</strong> 
-    <span id="email-container" class="email-ocult">
-        <span id="email-icon" style="cursor:pointer; font-size: 1.5rem;" title="Clica per veure l'email">✉️</span>
-        <span id="email-text"></span>
-    </span>
-</p>
-    </div>
-        <div class="faq-legal-footer">
-      <button id="faq-legal-modal-accept-btn">D'acord</button>
+      
+      <div id="email-container" class="email-ocult">
+          <span id="email-icon" title="Clica per veure l'email">✉️</span>
+          <span id="email-text"></span>
+      </div>
     </div>
 
+    <div class="faq-legal-footer">
+      <button id="faq-legal-modal-accept-btn">D'acord</button>
+    </div>
   </div>
 </div>
 
