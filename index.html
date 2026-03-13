@@ -1059,27 +1059,25 @@ footer {
   position: fixed; 
   z-index: 9999; 
   left: 0; top: 0;
-  width: 100%; 
-  height: 100%; 
-  background-color: var(--faq-l-overlay); 
+  width: 100%; height: 100%; 
+  background-color: rgba(0, 0, 0, 0.7); 
   backdrop-filter: blur(4px);
-  overflow: hidden; /* Evita que el fons fosc generi scroll propi */
 }
 
-/* 2. La caixa blanca ha de tenir una alçada màxima per cabre a la pantalla */
+/* 2. /* La caixa blanca (Contenidor Flex) */
 .faq-legal-modal-content {
-  background-color: var(--faq-l-bg);
-  color: var(--faq-l-text);
-  margin: 5vh auto; /* 5% d'espai a dalt */
-  padding: 30px;
-  border-radius: 12px;
+  background-color: #ffffff;
+  color: #333333;
+  margin: 5vh auto; /* Marges a dalt i a baix */
   width: 90%; 
   max-width: 550px;
-  max-height: 90vh; /* No pot ser més alta que el 90% de la pantalla */
-  display: flex;
-  flex-direction: column; /* Organitza el contingut en vertical */
-  position: relative;
+  max-height: 85vh; /* ALÇADA MÀXIMA ESTRICTA */
+  border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  
+  /* Flexbox per organitzar: Títol (dalt), Text (mig), Botó (baix) */
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -1115,15 +1113,15 @@ footer {
 }
 
 /* 3. L'element que realment fa l'scroll */
+/* El contenidor que fa l'SCROLL */
 .faq-legal-scrollable {
-  overflow-y: auto;  /* ACTIVA EL SCROLL AQUÍ */
-  flex-grow: 1;      /* Fa que ocupi tot l'espai disponible entre el títol i el botó */
-  padding-right: 15px;
-  margin: 20px 0;
+  flex: 1;             /* Ocupa tot l'espai restant */
+  overflow-y: auto;    /* ACTIVA L'SCROLL VERTICAL */
+  min-height: 0;       /* EL TRUC MÀGIC: Permet que la caixa s'encongeixi i forci l'scroll */
+  padding: 20px 25px;
   text-align: left;
-  /* Millora per a mòbils */
-  -webkit-overflow-scrolling: touch; 
 }
+.faq-legal-scrollable p { margin-bottom: 15px; line-height: 1.6; }
 
 /* Estil per als paràgrafs per separar-los visualment */
 .faq-legal-scrollable p {
@@ -1139,7 +1137,12 @@ footer {
   background-color: #ccc;
   border-radius: 10px;
 }
-
+/* Dark Mode Automàtic */
+@media (prefers-color-scheme: dark) {
+  .faq-legal-modal-content { background-color: #1e1e1e; color: #eee; }
+  .faq-legal-header, .faq-legal-footer { border-color: #333; }
+  .faq-legal-modal { background-color: rgba(0, 0, 0, 0.85); }
+}
 
 
     </style>
@@ -1987,35 +1990,32 @@ document.addEventListener("DOMContentLoaded", function() {
 <script>
 
 document.addEventListener("DOMContentLoaded", function() {
-  // Ara estem segurs que el HTML ja existeix
   const legalModal = document.getElementById("faq-legal-modal-container");
   const legalBtn = document.getElementById("faq-legal-trigger");
   const closeX = document.querySelector(".faq-legal-modal-close-x");
   const acceptBtn = document.getElementById("faq-legal-modal-accept-btn");
 
   if (legalBtn && legalModal) {
-    // Obrir
+    // Obrir i bloquejar fons
     legalBtn.onclick = function(e) {
-      e.preventDefault(); // Evita que l'enllaç faci coses estranyes
+      e.preventDefault();
       legalModal.style.display = "block";
-      document.body.style.overflow = "hidden"; // Bloqueja el scroll de la web de fons
+      document.body.style.overflow = "hidden"; 
     };
 
-    // Tancar
-        const closeModal = () => {
+    // Tancar i desbloquejar fons
+    const closeModal = () => {
       legalModal.style.display = "none";
-      document.body.style.overflow = "auto"; // Reactiva el scroll de la web
-};
+      document.body.style.overflow = ""; // Restaura el comportament per defecte
+    };
 
-    // Assignem l'esdeveniment només si els elements existeixen (evita errors a la consola)
-    if (closeX) closeX.onclick = closeModal;
-    if (acceptBtn) acceptBtn.onclick = closeModal;
-    // Tancar fora de la caixa
+    if(closeX) closeX.onclick = closeModal;
+    if(acceptBtn) acceptBtn.onclick = closeModal;
+
+    // Tancar si es clica fora de la caixa blanca
     window.onclick = function(event) {
       if (event.target === legalModal) closeModal();
     };
-  } else {
-    console.error("No s'han trobat els elements del modal. Revisa els IDs!");
   }
 });
 
@@ -2036,9 +2036,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <div id="faq-legal-modal-container" class="faq-legal-modal">
   <div class="faq-legal-modal-content">
+  <div class="faq-legal-header">
+      <h2>Avís Legal</h2>
     <span class="faq-legal-modal-close-x">&times;</span>
     <h2>Avís legal i exempció de responsabilitat</h2>
-    <hr>
+    
+    <div class="faq-legal-scrollable">
     <p>La informació proporcionada en aquesta secció de FAQs té un caràcter estrictament informatiu i general. L’usuari és l’únic responsable de verificar qualsevol dada o resultat obtingut a través d’aquest lloc web amb les fonts i canals oficials corresponents.
     </p>
 <p>Les tarifes utilitzades per la calculadora poden ser modificades per Renfe en qualsevol moment, així com els percentatges de descompte aplicats. Aquest lloc web no garanteix que la informació mostrada estigui sempre actualitzada o coincideixi amb les condicions vigents en el moment de la consulta.
@@ -2046,9 +2049,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>Aquest lloc web no recull, emmagatzema ni tracta cap dada personal dels usuaris. Qualsevol càlcul o consulta es realitza de manera local i temporal, sense conservar cap tipus d’informació identificable.
 </p>
 <p> L’ús d’aquest lloc web implica l’acceptació d’aquest avís legal.
-    
     </p>
-    
+    </div>
     <h3>Contacte de Suport</h3>
     <p>Si tens qualsevol dubte tècnic o legal al voltant d'aquest web', pots contactar a:</p>
     <p><strong>Email:</strong> <a href="mailto:suportusuarisavant@gmail.com">suportusuarisavant@gmail.com</a></p>
